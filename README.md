@@ -1,4 +1,4 @@
-# Marcel (Ndrong) — Portfolio & Selected Works
+# Marcelino M. Turangan — Portfolio & Selected Works
 
 Personal portfolio showcasing AI agent orchestration, full-stack Next.js development, and hardened Linux infrastructure operations.
 

@@ -15,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Marcel / Ndrong — AI Systems Integrator & Full-Stack Builder',
-  description: 'Portofolio Marcel: Pengembang sistem AI otonom, bot WhatsApp bisnis, full-stack Next.js, dan infrastruktur Linux mandiri di Nusantara (IKN).',
+  title: 'Marcelino M. Turangan — AI Systems Integrator & Full-Stack Builder',
+  description: 'Portofolio Marcelino M. Turangan: Pengembang sistem AI otonom, bot WhatsApp bisnis, full-stack Next.js, dan infrastruktur Linux mandiri di Nusantara (IKN).',
 };
 
 export default function RootLayout({

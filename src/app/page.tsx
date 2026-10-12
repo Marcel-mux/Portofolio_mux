@@ -90,13 +90,13 @@ export default function Home() {
             <div className="relative w-8 h-8 rounded-full overflow-hidden border border-black/10 dark:border-white/20">
               <Image 
                 src="/projects/profile.jpg" 
-                alt="Marcel Avatar" 
+                alt="Marcelino M. Turangan Avatar" 
                 fill 
                 className="object-cover object-top"
               />
             </div>
             <div>
-              <span className="font-medium text-sm tracking-tight block">Marcel / Ndrong</span>
+              <span className="font-medium text-sm tracking-tight block">Marcelino M. Turangan</span>
               <span className="text-[11px] text-black/50 dark:text-white/40 font-mono block -mt-0.5">IKN, Indonesia (WITA)</span>
             </div>
           </div>
@@ -117,7 +117,7 @@ export default function Home() {
             </button>
 
             <a
-              href="https://wa.me/628979360724?text=Halo%20Marcel,%20saya%20tertarik%20dengan%20portofolio%20Anda"
+              href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20dengan%20portofolio%20Anda"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
@@ -159,7 +159,7 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-3">
                 <a
-                  href="https://wa.me/628979360724?text=Halo%20Marcel,%20saya%20ingin%20berdiskusi%20proyek"
+                  href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20ingin%20berdiskusi%20proyek"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
@@ -189,12 +189,12 @@ export default function Home() {
             >
               <Image 
                 src="/projects/profile.jpg" 
-                alt="Marcel di IKN" 
+                alt="Marcelino M. Turangan di IKN" 
                 fill 
                 className="object-cover object-top hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                <span className="text-white text-xs font-mono">Marcel (Ndrong) • IKN Nusantara</span>
+                <span className="text-white text-xs font-mono">Marcelino M. Turangan • IKN Nusantara</span>
               </div>
             </motion.div>
           </div>
@@ -414,7 +414,7 @@ export default function Home() {
 
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
-                href="https://wa.me/628979360724?text=Halo%20Marcel,%20saya%20tertarik%20bekerjasama%20untuk%20proyek"
+                href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20bekerjasama%20untuk%20proyek"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
@@ -434,7 +434,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-black/50 dark:text-white/40 gap-4">
-          <div>© 2026 Marcel / Ndrong. Built with Next.js & Tailwind CSS.</div>
+          <div>© 2026 Marcelino M. Turangan. Built with Next.js & Tailwind CSS.</div>
           <div className="flex items-center gap-4 font-mono">
             <span>IKN Nusantara, ID</span>
             <span>•</span>
