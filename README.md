@@ -1,6 +1,6 @@
 # Marcelino M. Turangan — Portfolio & Selected Works
 
-Personal portfolio showcasing AI agent orchestration, full-stack Next.js development, and hardened Linux infrastructure operations.
+Personal portfolio showcasing AI agent orchestration, full-stack Next.js & PWA development, and hardened Oracle Cloud ARM64 Linux infrastructure.
 
 ## Tech Stack
 - **Framework:** Next.js 14 (App Router)
@@ -17,7 +17,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Featured Projects
-1. **FinPulse** — Personal Financial Tracker & Analytics SaaS.
-2. **Autonomous WhatsApp Multi-Agent Engine** — Self-hosted Baileys + 9Router AI Gateway.
-3. **Hardened Linux Cloud Infrastructure** — Tailscale Zero-Trust mesh + automated server monitoring.
+## Production Build & Static Export
+```bash
+npm run build
+```
+
+## Featured Projects & Works
+1. **Hermes Cockpit (OSS)** — Retro-tech mobile-first PWA client and zero-dependency reverse proxy for Nous Research Hermes Agent.
+2. **Autonomous WhatsApp Multi-Agent Engine** — Self-hosted Baileys WebSocket + 9Router AI Gateway with vision, audio, and web tools.
+3. **Antigravity Guard for 9Router** — Automated Python & systemd daemon that self-heals OAuth sessions and token refreshes.
+4. **FinPulse** — Personal Financial Tracker & Analytics SaaS with interactive charting and AI chatbot QA.
+5. **Hardened Oracle Cloud ARM64 (24GB RAM) Infrastructure** — Tailscale Zero-Trust mesh + automated server health and resource alerts.
