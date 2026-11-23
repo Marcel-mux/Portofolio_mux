@@ -15,9 +15,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Marcelino M. Turangan — AI Systems Integrator & Full-Stack Builder',
-  description: 'Portofolio Marcelino M. Turangan: Pengembang sistem AI otonom, bot WhatsApp bisnis, full-stack Next.js, dan infrastruktur Linux mandiri di Nusantara (IKN).',
+  title: 'Marcelino M. Turangan — AI Systems Integrator, Full-Stack Web/PWA & Linux Ops',
+  description:
+    'Portofolio Marcelino M. Turangan: Pengembang sistem AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), full-stack Next.js/PWA, dan infrastruktur Linux ARM64 di Nusantara (IKN).',
 };
+
+const themeInitScript = `
+(function() {
+  try {
+    var stored = localStorage.getItem('color-scheme');
+    var meta = document.querySelector('meta[name="color-scheme"]');
+    var valid = stored === 'dark' || stored === 'light' ? stored : null;
+    if (meta) meta.setAttribute('content', valid || 'light dark');
+    var isDark = valid ? valid === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.classList.toggle('light', !isDark);
+  } catch (e) {}
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -25,8 +40,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className="dark scroll-smooth">
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-dark-bg text-dark-text dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-brand-indigo/30`}>
+    <html lang="id" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <meta name="color-scheme" content="light dark" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-white text-[#171717] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-brand-indigo/30`}
+      >
         {children}
       </body>
     </html>

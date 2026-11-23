@@ -2,8 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light dark;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
+}
+
 @layer base {
   body {
     @apply transition-colors duration-200 antialiased;
+  }
+
+  :where(a:any-link, button, [tabindex="-1"]):focus-visible {
+    outline: 2px solid #5e6ad2;
+    outline-offset: 3px;
   }
 }
