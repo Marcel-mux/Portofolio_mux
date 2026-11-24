@@ -100,7 +100,7 @@ export const translations = {
       sectionTitle: 'Ops Console & Armada Cloud',
       sectionDesc:
         'Infrastruktur hybrid yang saya operasikan sendiri: Oracle Cloud ARM64 24/7 sebagai pusat kendali, terhubung ke 6 node Tailscale mesh, 6 VM/microVM sandbox, dan 17 cronjob monitoring.',
-      consoleHost: 'muxoracle@oci-arm64 · 140.245.50.98',
+      consoleHost: 'muxoracle@oci-arm64 · ap-singapore-1',
       consoleSummary: '24 vCPU/OCPU · 72 GB RAM · 10 Daemons · 6 Mesh Nodes · 17 Cronjobs',
       tabs: {
         fleet: 'Cloud Fleet (6)',
@@ -194,7 +194,7 @@ export const translations = {
       sectionTitle: 'Ops Console & Cloud Fleet',
       sectionDesc:
         'Self-hosted hybrid infrastructure I operate daily: a 24/7 Oracle Cloud ARM64 host bridged to a 6-node Tailscale mesh, 6 cloud VMs/microVMs, and 17 automated monitoring cronjobs.',
-      consoleHost: 'muxoracle@oci-arm64 · 140.245.50.98',
+      consoleHost: 'muxoracle@oci-arm64 · ap-singapore-1',
       consoleSummary: '24 vCPU/OCPU · 72 GB RAM · 10 Daemons · 6 Mesh Nodes · 17 Cronjobs',
       tabs: {
         fleet: 'Cloud Fleet (6)',

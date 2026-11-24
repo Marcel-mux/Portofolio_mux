@@ -178,7 +178,7 @@ export default function Home() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f5f6f8] transition-colors duration-200">
+      <div className="min-h-screen overflow-x-clip bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f5f6f8] transition-colors duration-200">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#111214] focus:text-white dark:focus:bg-[#0066ff] focus:text-xs focus:font-medium focus:shadow-lg"
@@ -385,7 +385,7 @@ export default function Home() {
               <div
                 role="group"
                 aria-label={t.projects.filterAria}
-                className="inline-flex p-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium self-start sm:self-auto"
+                className="flex flex-wrap p-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium self-start sm:self-auto max-w-full"
               >
                 {(
                   [
@@ -498,7 +498,7 @@ export default function Home() {
                       )}
 
                       {/* Content */}
-                      <div className="flex-1 min-w-0">
+                      <div className="w-full flex-1 min-w-0">
                         <div className="text-[11px] font-mono tracking-wider text-[#0066ff] dark:text-[#2585ff] uppercase mb-1.5">
                           {project.tag[lang]}
                         </div>
@@ -588,7 +588,7 @@ export default function Home() {
               <div
                 role="tablist"
                 aria-label="Infrastructure views"
-                className="flex overflow-x-auto border-b border-black/[0.08] dark:border-white/[0.08] bg-white/50 dark:bg-black/20 px-2 sm:px-4 gap-1"
+                className="flex flex-wrap sm:flex-nowrap border-b border-black/[0.08] dark:border-white/[0.08] bg-white/50 dark:bg-black/20 px-2 sm:px-4 gap-1 max-w-full"
               >
                 {(
                   [
