@@ -71,7 +71,7 @@ export const translations = {
       titlePart1: 'Merakit Agen AI Otonom, ',
       titlePart2: 'Aplikasi Web/PWA, dan Sistem Linux Self-Hosted.',
       description:
-        'Praktisi Linux (3+ tahun) & AI Systems Integrator di Nusantara (IKN). Menghubungkan agen AI ke WhatsApp, Discord & Telegram, membangun aplikasi Web/PWA, dan menjalankan armada server Linux ARM64 24/7 tanpa ketergantungan SaaS pihak ketiga.',
+        'Praktisi Linux (6+ tahun) & AI Systems Integrator di Nusantara (IKN). Menghubungkan agen AI ke WhatsApp, Discord & Telegram, membangun aplikasi Web/PWA, dan menjalankan armada server Linux ARM64 24/7 tanpa ketergantungan SaaS pihak ketiga.',
       downloadCv: 'Unduh CV (PDF)',
       whatsapp: 'WhatsApp',
       email: 'Email',
@@ -80,7 +80,7 @@ export const translations = {
       threads: 'Threads',
       metaStrip: [
         'IKN Nusantara (UTC+8)',
-        '3+ Tahun Linux Harian',
+        '6+ Tahun Linux Harian',
         'Armada Cloud 24 vCPU / 72 GB RAM',
         '10 Daemon Systemd Aktif',
       ],
@@ -168,7 +168,7 @@ export const translations = {
       titlePart1: 'Building Autonomous AI Agents, ',
       titlePart2: 'Web/PWA Apps, and Self-Hosted Linux Systems.',
       description:
-        'Linux practitioner (3+ years) & AI Systems Integrator in Nusantara (IKN). I wire autonomous AI agents into WhatsApp, Discord & Telegram, ship fast Web/PWA apps, and operate a 24/7 ARM64 Linux fleet without third-party SaaS lock-in.',
+        'Linux practitioner (6+ years) & AI Systems Integrator in Nusantara (IKN). I wire autonomous AI agents into WhatsApp, Discord & Telegram, ship fast Web/PWA apps, and operate a 24/7 ARM64 Linux fleet without third-party SaaS lock-in.',
       downloadCv: 'Download CV (PDF)',
       whatsapp: 'WhatsApp',
       email: 'Email',
@@ -177,7 +177,7 @@ export const translations = {
       threads: 'Threads',
       metaStrip: [
         'IKN Nusantara (UTC+8)',
-        '3+ Yrs Daily-Driver Linux',
+        '6+ Yrs Daily-Driver Linux',
         '24 vCPU / 72 GB Cloud Fleet',
         '10 Live systemd Daemons',
       ],
