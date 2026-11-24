@@ -182,7 +182,7 @@ export default function Home() {
       <div className="min-h-screen overflow-x-clip bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f5f6f8] transition-colors duration-200">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#111214] focus:text-white dark:focus:bg-[#0066ff] focus:text-xs focus:font-medium focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#0066ff] focus:text-white focus:text-xs focus:font-medium focus:shadow-lg"
         >
           {t.hero.skipToContent}
         </a>
@@ -263,7 +263,7 @@ export default function Home() {
 
               <a
                 href="#contact"
-                className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
               >
                 {t.nav.hireMe}
               </a>
@@ -308,7 +308,7 @@ export default function Home() {
                   <a
                     href="/CV_Marcelino_M_Turangan.pdf"
                     download="CV_Marcelino_M_Turangan.pdf"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
                   >
                     <Download size={15} aria-hidden="true" />
                     {t.hero.downloadCv}
@@ -426,7 +426,7 @@ export default function Home() {
                     onClick={() => setActiveTab(tab.key)}
                     className={`px-3 py-1.5 rounded-md transition-all uppercase tracking-wider text-[11px] font-mono ${
                       activeTab === tab.key
-                        ? 'bg-white text-[#111214] dark:bg-[#0066ff] dark:text-white shadow-sm'
+                        ? 'bg-[#0066ff] text-white shadow-sm'
                         : 'text-black/55 dark:text-white/55 hover:text-black dark:hover:text-white'
                     }`}
                   >
@@ -555,7 +555,7 @@ export default function Home() {
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
                           >
                             <Code2 size={14} aria-hidden="true" />
                             {t.projects.viewCode}
@@ -880,7 +880,7 @@ export default function Home() {
                     <a
                       href="/CV_Marcelino_M_Turangan.pdf"
                       download="CV_Marcelino_M_Turangan.pdf"
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
                     >
                       <Download size={14} aria-hidden="true" />
                       {t.experience.downloadFullCv}
@@ -913,7 +913,7 @@ export default function Home() {
                 href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20bekerjasama%20untuk%20proyek"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-between gap-3 px-4 py-2.5 rounded-md text-sm font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                className="inline-flex items-center justify-between gap-3 px-4 py-2.5 rounded-md text-sm font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
               >
                 <span className="inline-flex items-center gap-2">
                   <MessageSquare size={15} aria-hidden="true" />
