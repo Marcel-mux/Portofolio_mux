@@ -11,9 +11,7 @@ import {
   Cpu,
   MessageSquare,
   Code2,
-  Copy,
   Check,
-  Server,
   Download,
   AtSign,
   Globe,
@@ -116,7 +114,6 @@ export default function Home() {
     };
   }, [syncFromPreference]);
 
-  // Native <dialog> modal lifecycle (top-layer, Esc dismissal, focus return)
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -165,10 +162,10 @@ export default function Home() {
     try {
       await navigator.clipboard.writeText('marcelturangan2@gmail.com');
       setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2500);
+      setTimeout(() => setCopiedEmail(false), 2000);
     } catch {
       setCopiedEmail(true);
-      setTimeout(() => setCopiedEmail(false), 2500);
+      setTimeout(() => setCopiedEmail(false), 2000);
     }
   };
 
@@ -177,24 +174,30 @@ export default function Home() {
   const filteredProjects =
     activeTab === 'all' ? projectItems : projectItems.filter((p) => p.categories.includes(activeTab));
 
+  const btnPrimaryClass =
+    'inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-all duration-150 hover:-translate-y-px active:translate-y-px active:scale-[0.985]';
+
+  const btnSecondaryClass =
+    'inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.1] dark:border-white/[0.1] text-black/85 dark:text-white/90 hover:border-black/25 dark:hover:border-white/25 hover:bg-black/[0.07] dark:hover:bg-white/[0.08] transition-all duration-150 hover:-translate-y-px active:translate-y-px active:scale-[0.985]';
+
   return (
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen overflow-x-clip bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f5f6f8] transition-colors duration-200">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#0066ff] focus:text-white focus:text-xs focus:font-medium focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#0066ff] focus:text-white focus:text-sm focus:font-medium focus:shadow-lg"
         >
           {t.hero.skipToContent}
         </a>
 
-        {/* Navbar */}
-        <header className="sticky top-0 z-50 bg-white/90 dark:bg-[#08090a]/90 backdrop-blur-md border-b border-black/[0.08] dark:border-white/[0.08]">
+        {/* Solid Opaque Navbar */}
+        <header className="sticky top-0 z-50 bg-white dark:bg-[#08090a] border-b border-black/[0.08] dark:border-white/[0.08]">
           <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative w-14 h-9 rounded-lg overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
                 <Image
                   src="/logo.png"
-                  alt="MT Logo — Marcelino M. Turangan"
+                  alt="MT Logo"
                   fill
                   sizes="56px"
                   className="object-contain"
@@ -204,27 +207,27 @@ export default function Home() {
                 <span className="font-display font-semibold text-sm tracking-tight block truncate">
                   Marcelino M. Turangan
                 </span>
-                <span className="text-[11px] text-black/55 dark:text-white/45 font-mono block -mt-0.5 truncate">
+                <span className="text-[13px] text-black/60 dark:text-white/55 font-mono block -mt-0.5 truncate">
                   {t.hero.location}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <nav
                 aria-label="Primary"
-                className="hidden md:flex items-center gap-5 text-xs font-medium text-black/60 dark:text-white/60 mr-2"
+                className="hidden md:flex items-center gap-5 text-sm font-medium text-black/65 dark:text-white/65 mr-1"
               >
-                <a href="#projects" className="hover:text-black dark:hover:text-white transition-colors">
+                <a href="#projects" className="hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors">
                   {t.nav.projects}
                 </a>
-                <a href="#infra" className="hover:text-black dark:hover:text-white transition-colors">
+                <a href="#infra" className="hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors">
                   {t.nav.infra}
                 </a>
-                <a href="#background" className="hover:text-black dark:hover:text-white transition-colors">
+                <a href="#background" className="hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors">
                   {t.nav.experience}
                 </a>
-                <a href="#contact" className="hover:text-black dark:hover:text-white transition-colors">
+                <a href="#contact" className="hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors">
                   {t.nav.contact}
                 </a>
               </nav>
@@ -233,9 +236,9 @@ export default function Home() {
                 type="button"
                 onClick={toggleLang}
                 aria-label={t.nav.switchLang}
-                className="px-2.5 py-1.5 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-xs font-mono font-medium text-black/75 dark:text-white/75 hover:text-black dark:hover:text-white hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center gap-1.5"
+                className="min-h-[40px] px-2.5 py-1.5 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.1] dark:border-white/[0.1] text-[13px] font-mono font-medium text-black/80 dark:text-white/80 hover:border-black/25 dark:hover:border-white/25 transition-all duration-150 active:scale-[0.985] inline-flex items-center gap-1.5"
               >
-                <Globe size={13} aria-hidden="true" />
+                <Globe size={14} aria-hidden="true" />
                 <span>{lang === 'id' ? 'EN' : 'ID'}</span>
               </button>
 
@@ -243,27 +246,20 @@ export default function Home() {
                 type="button"
                 onClick={toggleTheme}
                 aria-label={resolvedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-                className="p-2 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/75 dark:text-white/75 hover:text-black dark:hover:text-white hover:border-black/20 dark:hover:border-white/20 transition-all"
+                className="min-h-[40px] min-w-[40px] p-2 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.1] dark:border-white/[0.1] text-black/80 dark:text-white/80 hover:border-black/25 dark:hover:border-white/25 transition-all duration-150 active:scale-[0.985] inline-flex items-center justify-center"
               >
                 {resolvedTheme === 'dark' ? (
-                  <Sun size={15} aria-hidden="true" />
+                  <Sun size={16} aria-hidden="true" />
                 ) : (
-                  <Moon size={15} aria-hidden="true" />
+                  <Moon size={16} aria-hidden="true" />
                 )}
               </button>
 
               <a
-                href="/CV_Marcelino_M_Turangan.pdf"
-                download="CV_Marcelino_M_Turangan.pdf"
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/80 dark:text-white/80 hover:bg-black/[0.08] dark:hover:bg-white/[0.1] transition-all"
-              >
-                <Download size={13} aria-hidden="true" />
-                {t.nav.cv}
-              </a>
-
-              <a
-                href="#contact"
-                className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
+                href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20dengan%20portofolio%20Anda"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex items-center justify-center min-h-[40px] text-sm font-medium px-4 py-1.5 rounded-md bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-all duration-150 hover:-translate-y-px active:translate-y-px active:scale-[0.985]"
               >
                 {t.nav.hireMe}
               </a>
@@ -273,15 +269,15 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="max-w-5xl mx-auto px-6 pt-12 pb-20">
-          {/* Hero Section (Decide Surface) */}
-          <section className="mb-20">
+          {/* Hero Section (Decide Surface — at most 2 hero action buttons + inline profile links) */}
+          <section className="mb-24">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35 }}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/70 dark:text-white/70 mb-7"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[13px] font-mono bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/75 dark:text-white/75 mb-7"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse" aria-hidden="true" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500" aria-hidden="true" />
               {t.hero.badge}
             </motion.div>
 
@@ -295,66 +291,71 @@ export default function Home() {
                 <h1
                   id="main-content"
                   tabIndex={-1}
-                  className="font-display text-4xl sm:text-5xl lg:text-[54px] font-semibold tracking-[-0.035em] leading-[1.06] mb-6"
+                  className="font-display text-4xl sm:text-5xl lg:text-[52px] font-semibold tracking-[-0.035em] leading-[1.08] mb-5"
                 >
                   {t.hero.titlePart1}
                   <span className="text-black/45 dark:text-white/45">{t.hero.titlePart2}</span>
                 </h1>
-                <p className="text-base sm:text-[17px] text-black/70 dark:text-white/70 leading-relaxed max-w-2xl mb-8">
+                <p className="text-base sm:text-[17px] text-black/75 dark:text-white/75 leading-relaxed max-w-2xl mb-7">
                   {t.hero.description}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-2.5">
+                {/* Max 2 Primary Hero Buttons */}
+                <div className="flex flex-wrap items-center gap-3 mb-5">
                   <a
                     href="/CV_Marcelino_M_Turangan.pdf"
                     download="CV_Marcelino_M_Turangan.pdf"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
+                    className={btnPrimaryClass}
                   >
-                    <Download size={15} aria-hidden="true" />
+                    <Download size={16} aria-hidden="true" />
                     {t.hero.downloadCv}
                   </a>
                   <a
                     href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20dengan%20portofolio%20Anda"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className={btnSecondaryClass}
                   >
-                    <MessageSquare size={15} aria-hidden="true" />
+                    <MessageSquare size={16} aria-hidden="true" />
                     {t.hero.whatsapp}
-                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                    <ArrowUpRight size={14} className="opacity-60" aria-hidden="true" />
                   </a>
+                </div>
+
+                {/* Secondary Plain Text Links */}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-mono text-black/70 dark:text-white/70">
                   <button
                     type="button"
                     onClick={copyEmail}
                     aria-label={t.contact.copyEmail}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className="inline-flex items-center gap-1.5 min-h-[44px] hover:text-[#0066ff] dark:hover:text-[#2585ff] hover:underline underline-offset-4 transition-colors"
                   >
                     {copiedEmail ? (
-                      <Check size={15} className="text-emerald-500" aria-hidden="true" />
+                      <Check size={14} className="text-emerald-500" aria-hidden="true" />
                     ) : (
-                      <Mail size={15} aria-hidden="true" />
+                      <Mail size={14} aria-hidden="true" />
                     )}
-                    {copiedEmail ? t.hero.emailCopied : t.hero.email}
+                    <span>{copiedEmail ? t.hero.emailCopied : t.hero.copyEmail}</span>
                   </button>
                   <a
                     href="https://github.com/Marcel-mux"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className="inline-flex items-center gap-1.5 min-h-[44px] hover:text-[#0066ff] dark:hover:text-[#2585ff] hover:underline underline-offset-4 transition-colors"
                   >
-                    <Code2 size={15} aria-hidden="true" />
-                    {t.hero.github}
-                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                    <Code2 size={14} aria-hidden="true" />
+                    <span>{t.hero.github}</span>
+                    <ArrowUpRight size={13} className="opacity-60" aria-hidden="true" />
                   </a>
                   <a
                     href="https://www.threads.net/@marcelt_0"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className="inline-flex items-center gap-1.5 min-h-[44px] hover:text-[#0066ff] dark:hover:text-[#2585ff] hover:underline underline-offset-4 transition-colors"
                   >
-                    <AtSign size={15} aria-hidden="true" />
-                    {t.hero.threads}
-                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                    <AtSign size={14} aria-hidden="true" />
+                    <span>{t.hero.threads}</span>
+                    <ArrowUpRight size={13} className="opacity-60" aria-hidden="true" />
                   </a>
                 </div>
               </motion.div>
@@ -374,30 +375,30 @@ export default function Home() {
                   priority
                   className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent p-3.5">
-                  <span className="text-white text-[11px] font-mono tracking-tight block">
+                <div className="absolute inset-x-0 bottom-0 bg-[#08090a]/90 px-3.5 py-2.5 border-t border-white/10">
+                  <span className="text-white text-[13px] font-mono tracking-tight block">
                     Marcelino M. Turangan · IKN
                   </span>
                 </div>
               </motion.div>
             </div>
 
-            {/* Single-line Hairline Metadata Strip (replaces redundant 4-box monument stats) */}
-            <div className="pt-4 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-black/55 dark:text-white/50">
+            {/* Single-line Hairline Metadata Strip */}
+            <div className="pt-4 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] font-mono text-black/65 dark:text-white/60">
               {t.hero.metaStrip.map((item, idx) => (
                 <span key={item} className="inline-flex items-center gap-2">
-                  {idx > 0 && <span className="text-black/20 dark:text-white/20" aria-hidden="true">/</span>}
+                  {idx > 0 && <span className="text-black/25 dark:text-white/25" aria-hidden="true">/</span>}
                   <span>{item}</span>
                 </span>
               ))}
             </div>
           </section>
 
-          {/* 01 / Projects Section (Explore + Decide Surface) */}
+          {/* 01 / Projects Section */}
           <section id="projects" className="mb-24">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-black/[0.08] dark:border-white/[0.08]">
               <div>
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+                <span className="text-[13px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
                   {t.projects.sectionPre}
                 </span>
                 <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em]">
@@ -409,7 +410,7 @@ export default function Home() {
               <div
                 role="group"
                 aria-label={t.projects.filterAria}
-                className="flex flex-wrap p-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium self-start sm:self-auto max-w-full"
+                className="flex flex-wrap p-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-[13px] font-medium self-start sm:self-auto max-w-full gap-1"
               >
                 {(
                   [
@@ -424,10 +425,10 @@ export default function Home() {
                     type="button"
                     aria-pressed={activeTab === tab.key}
                     onClick={() => setActiveTab(tab.key)}
-                    className={`px-3 py-1.5 rounded-md transition-all uppercase tracking-wider text-[11px] font-mono ${
+                    className={`min-h-[38px] px-3 py-1.5 rounded-md transition-all duration-150 active:scale-[0.985] text-[13px] font-mono ${
                       activeTab === tab.key
                         ? 'bg-[#0066ff] text-white shadow-sm'
-                        : 'text-black/55 dark:text-white/55 hover:text-black dark:hover:text-white'
+                        : 'text-black/65 dark:text-white/65 hover:text-black dark:hover:text-white'
                     }`}
                   >
                     {tab.label}
@@ -443,19 +444,19 @@ export default function Home() {
                   <motion.article
                     key={project.id}
                     layout
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.99 }}
                     transition={{ duration: 0.25 }}
-                    className="rounded-xl p-5 sm:p-7 bg-[#fafafa] dark:bg-[#0e0f11] border border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-colors group"
+                    className="rounded-xl p-5 sm:p-7 bg-[#fafafa] dark:bg-[#0e0f11] border border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-all duration-200 hover:-translate-y-0.5 group"
                   >
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
                       {/* Uncropped Media Gallery */}
                       {project.mediaLayout === 'portrait-pair' ? (
-                        <div className="w-full lg:w-[340px] shrink-0 grid grid-cols-2 gap-2.5">
+                        <div className="w-full lg:w-[320px] shrink-0 grid grid-cols-2 gap-2.5">
                           {[
                             { src: project.image, alt: project.title[lang] },
-                            { src: project.imageSecondary, alt: `${project.title[lang]} - Detail` },
+                            { src: project.imageSecondary, alt: `${project.title[lang]} Detail` },
                           ].map((media) => (
                             <button
                               key={media.src}
@@ -468,17 +469,17 @@ export default function Home() {
                                 src={media.src}
                                 alt={media.alt}
                                 fill
-                                sizes="(max-width: 1024px) 50vw, 170px"
-                                className="object-contain p-0.5 group-hover/img:scale-[1.02] transition-transform duration-300"
+                                sizes="(max-width: 1024px) 50vw, 160px"
+                                className="object-contain p-0.5 group-hover/img:scale-[1.03] transition-transform duration-300"
                               />
                               <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
-                                <ZoomIn size={12} aria-hidden="true" />
+                                <ZoomIn size={13} aria-hidden="true" />
                               </span>
                             </button>
                           ))}
                         </div>
                       ) : (
-                        <div className="w-full lg:w-[340px] shrink-0 space-y-2.5">
+                        <div className="w-full lg:w-[320px] shrink-0 space-y-2.5">
                           <button
                             type="button"
                             onClick={() => setLightboxImage({ src: project.image, alt: project.title[lang] })}
@@ -489,8 +490,8 @@ export default function Home() {
                               src={project.image}
                               alt={project.title[lang]}
                               fill
-                              sizes="(max-width: 1024px) 100vw, 340px"
-                              className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
+                              sizes="(max-width: 1024px) 100vw, 320px"
+                              className="object-contain p-1 group-hover/img:scale-[1.03] transition-transform duration-300"
                             />
                             <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
                               <ZoomIn size={13} aria-hidden="true" />
@@ -501,7 +502,7 @@ export default function Home() {
                             onClick={() =>
                               setLightboxImage({
                                 src: project.imageSecondary,
-                                alt: `${project.title[lang]} - Detail`,
+                                alt: `${project.title[lang]} Detail`,
                               })
                             }
                             aria-label={`Zoom ${project.title[lang]} detail`}
@@ -509,10 +510,10 @@ export default function Home() {
                           >
                             <Image
                               src={project.imageSecondary}
-                              alt={`${project.title[lang]} - Detail`}
+                              alt={`${project.title[lang]} Detail`}
                               fill
-                              sizes="(max-width: 1024px) 100vw, 340px"
-                              className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
+                              sizes="(max-width: 1024px) 100vw, 320px"
+                              className="object-contain p-1 group-hover/img:scale-[1.03] transition-transform duration-300"
                             />
                             <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
                               <ZoomIn size={13} aria-hidden="true" />
@@ -523,7 +524,7 @@ export default function Home() {
 
                       {/* Content */}
                       <div className="w-full flex-1 min-w-0">
-                        <div className="text-[11px] font-mono tracking-wider text-[#0066ff] dark:text-[#2585ff] uppercase mb-1.5">
+                        <div className="text-[13px] font-mono tracking-wide text-[#0066ff] dark:text-[#2585ff] uppercase mb-1.5">
                           {project.tag[lang]}
                         </div>
 
@@ -531,11 +532,11 @@ export default function Home() {
                           {project.title[lang]}
                         </h3>
 
-                        <p className="text-sm text-black/75 dark:text-white/75 leading-relaxed mb-4">
+                        <p className="text-base text-black/80 dark:text-white/80 leading-relaxed mb-4">
                           {project.desc[lang]}
                         </p>
 
-                        <div className="py-2 border-y border-black/[0.06] dark:border-white/[0.06] text-[11px] font-mono text-black/60 dark:text-white/55 mb-4">
+                        <div className="py-2 border-y border-black/[0.06] dark:border-white/[0.06] text-[13px] font-mono text-black/65 dark:text-white/60 mb-4">
                           {project.metrics[lang]}
                         </div>
 
@@ -543,7 +544,7 @@ export default function Home() {
                           {project.chips.map((chip) => (
                             <span
                               key={chip}
-                              className="text-[11px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-black/70 dark:text-white/70"
+                              className="text-[13px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-black/75 dark:text-white/75"
                             >
                               {chip}
                             </span>
@@ -555,21 +556,21 @@ export default function Home() {
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
+                            className={btnPrimaryClass}
                           >
-                            <Code2 size={14} aria-hidden="true" />
+                            <Code2 size={15} aria-hidden="true" />
                             {t.projects.viewCode}
-                            <ArrowUpRight size={13} className="opacity-70" aria-hidden="true" />
+                            <ArrowUpRight size={14} className="opacity-70" aria-hidden="true" />
                           </a>
                           {project.live && (
                             <a
                               href={project.live}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/80 dark:text-white/80 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                              className={btnSecondaryClass}
                             >
                               {t.projects.livePreview}
-                              <ArrowUpRight size={13} className="opacity-70" aria-hidden="true" />
+                              <ArrowUpRight size={14} className="opacity-70" aria-hidden="true" />
                             </a>
                           )}
                         </div>
@@ -581,16 +582,16 @@ export default function Home() {
             </div>
           </section>
 
-          {/* 02 / Ops Console & Infrastructure (Monitor Surface — dense, glanceable, zero card bloat) */}
+          {/* 02 / Ops Console & Infrastructure (Monitor Surface) */}
           <section id="infra" className="mb-24">
             <div className="mb-8">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+              <span className="text-[13px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
                 {t.infra.sectionPre}
               </span>
               <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em] mb-2">
                 {t.infra.sectionTitle}
               </h2>
-              <p className="text-sm text-black/65 dark:text-white/65 max-w-2xl leading-relaxed">
+              <p className="text-base text-black/70 dark:text-white/70 max-w-2xl leading-relaxed">
                 {t.infra.sectionDesc}
               </p>
             </div>
@@ -599,11 +600,11 @@ export default function Home() {
             <div className="rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-[#fafafa] dark:bg-[#0e0f11] overflow-hidden">
               {/* Top Console Status Bar */}
               <div className="px-4 sm:px-5 py-3 border-b border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5 text-xs font-mono">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse shrink-0" aria-hidden="true" />
-                  <span className="text-black/85 dark:text-white/90 font-medium">{t.infra.consoleHost}</span>
+                <div className="flex items-center gap-2.5 text-[13px] font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
+                  <span className="text-black/90 dark:text-white/95 font-medium">{t.infra.consoleHost}</span>
                 </div>
-                <div className="text-[11px] font-mono text-black/55 dark:text-white/50 tabular-nums">
+                <div className="text-[13px] font-mono text-black/60 dark:text-white/55 tabular-nums">
                   {t.infra.consoleSummary}
                 </div>
               </div>
@@ -630,10 +631,10 @@ export default function Home() {
                       role="tab"
                       aria-selected={active}
                       onClick={() => setInfraTab(tab.key)}
-                      className={`px-3.5 py-2.5 text-xs font-mono whitespace-nowrap border-b-2 transition-colors ${
+                      className={`min-h-[44px] px-3.5 py-2.5 text-[13px] font-mono whitespace-nowrap border-b-2 transition-colors ${
                         active
                           ? 'border-[#0066ff] dark:border-[#2585ff] text-black dark:text-white font-medium'
-                          : 'border-transparent text-black/55 dark:text-white/50 hover:text-black dark:hover:text-white'
+                          : 'border-transparent text-black/60 dark:text-white/55 hover:text-black dark:hover:text-white'
                       }`}
                     >
                       {tab.label}
@@ -646,7 +647,7 @@ export default function Home() {
               <div role="tabpanel" className="p-0">
                 {infraTab === 'fleet' && (
                   <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
-                    <div className="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                    <div className="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2.5 text-[13px] font-mono font-medium text-black/55 dark:text-white/50 bg-black/[0.015] dark:bg-white/[0.015]">
                       <div className="col-span-3">{t.infra.headers.node}</div>
                       <div className="col-span-3">{t.infra.headers.spec}</div>
                       <div className="col-span-4">{t.infra.headers.role}</div>
@@ -658,30 +659,30 @@ export default function Home() {
                         className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-4 sm:px-5 py-3.5 items-start md:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                       >
                         <div className="md:col-span-3 min-w-0">
-                          <div className="text-xs font-medium text-black/90 dark:text-white/95 truncate">
+                          <div className="text-sm font-medium text-black/90 dark:text-white/95 truncate">
                             {node.name}
                           </div>
-                          <div className="text-[11px] font-mono text-black/45 dark:text-white/40">{node.provider}</div>
+                          <div className="text-[13px] font-mono text-black/55 dark:text-white/50">{node.provider}</div>
                         </div>
                         <div className="md:col-span-3 min-w-0">
-                          <div className="text-[11px] font-mono text-black/75 dark:text-white/75 tabular-nums">
+                          <div className="text-[13px] font-mono text-black/80 dark:text-white/80 tabular-nums">
                             {node.spec}
                           </div>
-                          <div className="text-[10px] font-mono text-black/45 dark:text-white/40">{node.os}</div>
+                          <div className="text-[13px] font-mono text-black/55 dark:text-white/50">{node.os}</div>
                         </div>
-                        <div className="md:col-span-4 text-xs text-black/65 dark:text-white/65 leading-relaxed">
+                        <div className="md:col-span-4 text-sm text-black/75 dark:text-white/75 leading-relaxed">
                           {node.role[lang]}
                         </div>
                         <div className="md:col-span-2 md:text-right">
                           <span
-                            className={`text-[10px] font-mono px-2 py-0.5 rounded inline-flex items-center gap-1.5 ${
+                            className={`text-[13px] font-mono px-2.5 py-0.5 rounded inline-flex items-center gap-1.5 ${
                               node.statusType === 'online'
-                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
                                 : node.statusType === 'watchdog'
                                   ? 'bg-[#0066ff]/10 text-[#0066ff] dark:text-[#2585ff] border border-[#0066ff]/20'
                                   : node.statusType === 'autowake'
-                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                                    : 'bg-black/5 dark:bg-white/5 text-black/55 dark:text-white/45 border border-black/10 dark:border-white/10'
+                                    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'
+                                    : 'bg-black/5 dark:bg-white/5 text-black/65 dark:text-white/55 border border-black/10 dark:border-white/10'
                             }`}
                           >
                             <span
@@ -692,7 +693,7 @@ export default function Home() {
                                     ? 'bg-[#0066ff] dark:bg-[#2585ff]'
                                     : node.statusType === 'autowake'
                                       ? 'bg-amber-500'
-                                      : 'bg-black/35 dark:bg-white/35'
+                                      : 'bg-black/40 dark:bg-white/40'
                               }`}
                               aria-hidden="true"
                             />
@@ -706,7 +707,7 @@ export default function Home() {
 
                 {infraTab === 'services' && (
                   <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
-                    <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                    <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[13px] font-mono font-medium text-black/55 dark:text-white/50 bg-black/[0.015] dark:bg-white/[0.015]">
                       <div className="col-span-4">{t.infra.headers.service}</div>
                       <div className="col-span-6">{t.infra.headers.desc}</div>
                       <div className="col-span-2 text-right">{t.infra.headers.bind}</div>
@@ -716,13 +717,13 @@ export default function Home() {
                         key={s.name}
                         className="grid grid-cols-1 sm:grid-cols-12 gap-1.5 sm:gap-4 px-4 sm:px-5 py-3 items-start sm:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                       >
-                        <div className="sm:col-span-4 font-mono text-xs text-black/90 dark:text-white/95 flex items-center gap-2 min-w-0">
+                        <div className="sm:col-span-4 font-mono text-[13px] text-black/90 dark:text-white/95 flex items-center gap-2 min-w-0">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
                           <span className="truncate">{s.name}</span>
                         </div>
-                        <div className="sm:col-span-6 text-xs text-black/65 dark:text-white/65">{s.desc[lang]}</div>
+                        <div className="sm:col-span-6 text-sm text-black/75 dark:text-white/75">{s.desc[lang]}</div>
                         <div className="sm:col-span-2 sm:text-right">
-                          <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/60 dark:text-white/60 tabular-nums">
+                          <span className="font-mono text-[13px] px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/70 dark:text-white/70 tabular-nums">
                             {s.port}
                           </span>
                         </div>
@@ -734,7 +735,7 @@ export default function Home() {
                 {infraTab === 'mesh' && (
                   <div>
                     <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
-                      <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                      <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[13px] font-mono font-medium text-black/55 dark:text-white/50 bg-black/[0.015] dark:bg-white/[0.015]">
                         <div className="col-span-3">{t.infra.headers.host}</div>
                         <div className="col-span-5">{t.infra.headers.hardware}</div>
                         <div className="col-span-4">{t.infra.headers.role}</div>
@@ -744,7 +745,7 @@ export default function Home() {
                           key={n.host}
                           className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 px-4 sm:px-5 py-3 items-start sm:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                         >
-                          <div className="sm:col-span-3 flex items-center gap-2 font-mono text-xs text-black/90 dark:text-white/95">
+                          <div className="sm:col-span-3 flex items-center gap-2 font-mono text-[13px] text-black/90 dark:text-white/95">
                             <span
                               aria-hidden="true"
                               className={`w-1.5 h-1.5 rounded-full shrink-0 ${
@@ -757,13 +758,13 @@ export default function Home() {
                             />
                             {n.host}
                           </div>
-                          <div className="sm:col-span-5 text-xs font-mono text-black/60 dark:text-white/60">{n.spec}</div>
-                          <div className="sm:col-span-4 text-xs text-black/65 dark:text-white/65">{n.role[lang]}</div>
+                          <div className="sm:col-span-5 text-[13px] font-mono text-black/65 dark:text-white/65">{n.spec}</div>
+                          <div className="sm:col-span-4 text-sm text-black/75 dark:text-white/75">{n.role[lang]}</div>
                         </div>
                       ))}
                     </div>
-                    <div className="px-4 sm:px-5 py-3 border-t border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-2 text-[11px] font-mono text-black/55 dark:text-white/50">
-                      <Terminal size={12} aria-hidden="true" />
+                    <div className="px-4 sm:px-5 py-3 border-t border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-2 text-[13px] font-mono text-black/65 dark:text-white/60">
+                      <Terminal size={14} aria-hidden="true" />
                       <span>{t.infra.cronSummary}</span>
                     </div>
                   </div>
@@ -773,14 +774,14 @@ export default function Home() {
                   <div className="p-5 sm:p-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                       <div className="flex items-center gap-2">
-                        <Cpu size={15} className="text-[#0066ff] dark:text-[#2585ff]" aria-hidden="true" />
-                        <h3 className="text-sm font-medium">{t.infra.aiGatewayTitle}</h3>
+                        <Cpu size={16} className="text-[#0066ff] dark:text-[#2585ff]" aria-hidden="true" />
+                        <h3 className="text-base font-medium">{t.infra.aiGatewayTitle}</h3>
                       </div>
-                      <span className="text-[11px] font-mono text-black/55 dark:text-white/50">
+                      <span className="text-[13px] font-mono text-black/65 dark:text-white/60">
                         {t.infra.aiGatewayDesc}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {[
                         'Antigravity OAuth ×8',
                         'OpenAI-Compatible ×7',
@@ -793,7 +794,7 @@ export default function Home() {
                       ].map((textTag) => (
                         <span
                           key={textTag}
-                          className="text-[11px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/70 dark:text-white/70"
+                          className="text-[13px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/75 dark:text-white/75"
                         >
                           {textTag}
                         </span>
@@ -805,10 +806,10 @@ export default function Home() {
             </div>
           </section>
 
-          {/* 03 / Background & Core Stack Matrix (Kills redundant 3-card Icon Topper grid) */}
+          {/* 03 / Background & Core Stack Matrix */}
           <section id="background" className="mb-24">
             <div className="mb-8 pb-4 border-b border-black/[0.08] dark:border-white/[0.08]">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+              <span className="text-[13px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
                 {t.experience.sectionPre}
               </span>
               <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em]">
@@ -817,24 +818,23 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-              {/* Experience List + Compact Stack Rows */}
               <div className="lg:col-span-8 space-y-10">
                 <div className="divide-y divide-black/[0.08] dark:divide-white/[0.08]">
                   {experienceItems.map((exp, idx) => (
                     <div key={exp.role} className={idx === 0 ? 'pb-6' : 'pt-6'}>
                       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1">
-                        <h3 className="font-display text-base sm:text-lg font-semibold tracking-tight">{exp.role}</h3>
-                        <span className="text-[11px] font-mono text-black/50 dark:text-white/45">{exp.period[lang]}</span>
+                        <h3 className="font-display text-lg font-semibold tracking-tight">{exp.role}</h3>
+                        <span className="text-[13px] font-mono text-black/60 dark:text-white/55">{exp.period[lang]}</span>
                       </div>
-                      <div className="text-xs font-mono text-[#0066ff] dark:text-[#2585ff] mb-2.5">{exp.org}</div>
-                      <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed">{exp.summary[lang]}</p>
+                      <div className="text-[13px] font-mono text-[#0066ff] dark:text-[#2585ff] mb-2.5">{exp.org}</div>
+                      <p className="text-base text-black/75 dark:text-white/75 leading-relaxed">{exp.summary[lang]}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Compact Stack Spec Matrix (No icon toppers, no equal-weight feature tiles) */}
+                {/* Compact Stack Spec Matrix */}
                 <div>
-                  <h3 className="text-xs font-mono uppercase tracking-wider text-black/50 dark:text-white/45 mb-4">
+                  <h3 className="text-[13px] font-mono uppercase tracking-wider text-black/60 dark:text-white/55 mb-4">
                     {t.experience.stackTitle}
                   </h3>
                   <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06] border-y border-black/[0.08] dark:border-white/[0.08]">
@@ -843,14 +843,14 @@ export default function Home() {
                         key={row.area.en}
                         className="py-3.5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6"
                       >
-                        <div className="sm:w-40 shrink-0 text-xs font-mono font-medium text-black/85 dark:text-white/85">
+                        <div className="sm:w-44 shrink-0 text-[13px] font-mono font-medium text-black/85 dark:text-white/85">
                           {row.area[lang]}
                         </div>
                         <div className="flex flex-wrap gap-1.5">
                           {row.items.map((item) => (
                             <span
                               key={item}
-                              className="text-[11px] font-mono px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.04] text-black/70 dark:text-white/70"
+                              className="text-[13px] font-mono px-2.5 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.04] text-black/75 dark:text-white/75"
                             >
                               {item}
                             </span>
@@ -866,23 +866,23 @@ export default function Home() {
               <div className="lg:col-span-4">
                 <div className="rounded-xl bg-[#fafafa] dark:bg-[#0e0f11] border border-black/[0.08] dark:border-white/[0.08] p-6 flex flex-col justify-between gap-6">
                   <div>
-                    <div className="text-[11px] font-mono uppercase tracking-wider text-black/45 dark:text-white/45 mb-2">
+                    <div className="text-[13px] font-mono uppercase tracking-wider text-black/55 dark:text-white/50 mb-2">
                       {t.experience.educationTitle}
                     </div>
-                    <div className="font-display text-base font-semibold text-black/90 dark:text-white/95">
+                    <div className="font-display text-lg font-semibold text-black/90 dark:text-white/95">
                       {t.experience.school}
                     </div>
-                    <div className="text-xs text-black/60 dark:text-white/55 mt-1">{t.experience.schoolDetail}</div>
+                    <div className="text-sm text-black/65 dark:text-white/60 mt-1">{t.experience.schoolDetail}</div>
                   </div>
 
                   <div className="pt-5 border-t border-black/[0.08] dark:border-white/[0.08]">
-                    <div className="text-xs text-black/60 dark:text-white/55 mb-3">{t.experience.cvPrompt}</div>
+                    <div className="text-sm text-black/65 dark:text-white/60 mb-3">{t.experience.cvPrompt}</div>
                     <a
                       href="/CV_Marcelino_M_Turangan.pdf"
                       download="CV_Marcelino_M_Turangan.pdf"
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
+                      className={`w-full ${btnPrimaryClass}`}
                     >
-                      <Download size={14} aria-hidden="true" />
+                      <Download size={15} aria-hidden="true" />
                       {t.experience.downloadFullCv}
                     </a>
                   </div>
@@ -891,49 +891,49 @@ export default function Home() {
             </div>
           </section>
 
-          {/* 04 / Editorial Split Contact (No centered SaaS marketing banner) */}
+          {/* 04 / Editorial Split Contact */}
           <section
             id="contact"
             className="pt-12 border-t border-black/[0.08] dark:border-white/[0.08] grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
           >
             <div className="lg:col-span-7">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-2">
+              <span className="text-[13px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-2">
                 {t.contact.sectionPre}
               </span>
               <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em] mb-3">
                 {t.contact.title}
               </h2>
-              <p className="text-sm text-black/65 dark:text-white/65 leading-relaxed max-w-xl">
+              <p className="text-base text-black/70 dark:text-white/70 leading-relaxed max-w-xl">
                 {t.contact.description}
               </p>
             </div>
 
-            <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-2.5 lg:items-stretch">
+            <div className="lg:col-span-5 flex flex-col gap-2.5 lg:items-stretch">
               <a
                 href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20bekerjasama%20untuk%20proyek"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-between gap-3 px-4 py-2.5 rounded-md text-sm font-medium bg-[#0066ff] text-white hover:bg-[#0052cc] dark:hover:bg-[#2585ff] transition-colors"
+                className={`${btnPrimaryClass} justify-between`}
               >
                 <span className="inline-flex items-center gap-2">
-                  <MessageSquare size={15} aria-hidden="true" />
+                  <MessageSquare size={16} aria-hidden="true" />
                   {t.contact.chatWa}
                 </span>
-                <ArrowUpRight size={14} className="opacity-70" aria-hidden="true" />
+                <ArrowUpRight size={15} className="opacity-70" aria-hidden="true" />
               </a>
 
               <button
                 type="button"
                 onClick={copyEmail}
-                className="px-4 py-2.5 rounded-md text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center justify-between gap-3"
+                className={`${btnSecondaryClass} justify-between`}
               >
-                <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2 min-w-0 truncate">
                   {copiedEmail ? (
-                    <Check size={15} className="text-emerald-500" aria-hidden="true" />
+                    <Check size={16} className="text-emerald-500 shrink-0" aria-hidden="true" />
                   ) : (
-                    <Copy size={15} aria-hidden="true" />
+                    <Mail size={16} className="shrink-0" aria-hidden="true" />
                   )}
-                  {copiedEmail ? t.contact.emailCopied : t.contact.copyEmail}
+                  <span className="truncate">{copiedEmail ? t.contact.emailCopied : t.contact.copyEmail}</span>
                 </span>
               </button>
               <span aria-live="polite" className="sr-only">
@@ -943,10 +943,10 @@ export default function Home() {
               <a
                 href="/CV_Marcelino_M_Turangan.pdf"
                 download="CV_Marcelino_M_Turangan.pdf"
-                className="px-4 py-2.5 rounded-md text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center justify-between gap-3"
+                className={`${btnSecondaryClass} justify-between`}
               >
                 <span className="inline-flex items-center gap-2">
-                  <Download size={15} aria-hidden="true" />
+                  <Download size={16} aria-hidden="true" />
                   {t.contact.downloadCv}
                 </span>
               </a>
@@ -954,7 +954,7 @@ export default function Home() {
           </section>
 
           {/* Footer */}
-          <footer className="mt-16 pt-8 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs text-black/50 dark:text-white/45 gap-4">
+          <footer className="mt-16 pt-8 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-[13px] text-black/60 dark:text-white/55 gap-4">
             <div className="flex items-center gap-2.5">
               <div className="relative w-10 h-6 rounded overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
                 <Image src="/logo.png" alt="MT Logo" fill sizes="40px" className="object-contain" />
@@ -966,7 +966,7 @@ export default function Home() {
                 href="https://github.com/Marcel-mux"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-black dark:hover:text-white transition-colors"
+                className="min-h-[44px] inline-flex items-center hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors"
               >
                 GitHub
               </a>
@@ -975,7 +975,7 @@ export default function Home() {
                 href="https://www.threads.net/@marcelt_0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-black dark:hover:text-white transition-colors"
+                className="min-h-[44px] inline-flex items-center hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors"
               >
                 Threads
               </a>
@@ -983,7 +983,7 @@ export default function Home() {
               <a
                 href="/CV_Marcelino_M_Turangan.pdf"
                 download="CV_Marcelino_M_Turangan.pdf"
-                className="hover:text-black dark:hover:text-white transition-colors"
+                className="min-h-[44px] inline-flex items-center hover:text-black dark:hover:text-white hover:underline underline-offset-4 transition-colors"
               >
                 CV (PDF)
               </a>
@@ -1013,7 +1013,7 @@ export default function Home() {
                 autoFocus
                 onClick={() => setLightboxImage(null)}
                 aria-label="Close image preview"
-                className="fixed top-4 right-4 z-[110] p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
+                className="fixed top-4 right-4 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
               >
                 <X size={20} aria-hidden="true" />
               </button>

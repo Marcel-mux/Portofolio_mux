@@ -24,9 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Marcelino M. Turangan — AI Systems Integrator, Web/PWA & Linux Ops',
+  title: 'Marcelino M. Turangan: AI Systems, Web/PWA & Linux Ops',
   description:
-    'Portofolio Marcelino M. Turangan: Pengembang agen AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), aplikasi Web/PWA, dan armada Linux ARM64 di Nusantara (IKN).',
+    'Portofolio Marcelino M. Turangan: agen AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), aplikasi Web/PWA, dan armada Linux ARM64 di Nusantara (IKN).',
 };
 
 const themeInitScript = `
@@ -49,13 +49,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="id" data-type="software" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="color-scheme" content="light dark" />
+        <meta name="page-type" content="software" />
+        <meta name="site-kind" content="software" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} font-sans bg-white text-[#111214] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-[#0066ff]/25`}
+        className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} font-sans text-base bg-white text-[#111214] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-[#0066ff]/25`}
       >
         {children}
       </body>
