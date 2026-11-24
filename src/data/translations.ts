@@ -1,5 +1,6 @@
 export type Lang = 'id' | 'en';
 export type TabKey = 'all' | 'ai' | 'web' | 'linux';
+export type InfraTabKey = 'fleet' | 'services' | 'mesh' | 'gateway';
 
 export interface ProjectItem {
   id: string;
@@ -38,7 +39,6 @@ export interface CloudFleetNode {
   role: { id: string; en: string };
   statusLabel: { id: string; en: string };
   statusType: 'online' | 'watchdog' | 'autowake' | 'standby';
-  iconType: 'server' | 'cpu' | 'browser' | 'terminal' | 'monitor' | 'box';
 }
 
 export interface ExperienceItem {
@@ -48,9 +48,8 @@ export interface ExperienceItem {
   summary: { id: string; en: string };
 }
 
-export interface CapabilityCard {
-  title: string;
-  desc: { id: string; en: string };
+export interface StackRow {
+  area: { id: string; en: string };
   items: string[];
 }
 
@@ -58,38 +57,34 @@ export const translations = {
   id: {
     nav: {
       projects: 'Proyek',
-      infra: 'Infrastruktur',
-      experience: 'Pengalaman',
-      capabilities: 'Keahlian',
+      infra: 'Ops Console',
+      experience: 'Latar Belakang',
       contact: 'Kontak',
-      hireMe: 'Rekrut Saya',
+      hireMe: 'Hubungi',
       cv: 'CV',
-      switchLang: 'Ganti ke English',
+      switchLang: 'Switch to English',
     },
     hero: {
       skipToContent: 'Lewati ke konten utama',
       location: 'IKN, Indonesia (WITA)',
-      badge: 'Tersedia untuk Peran Remote, Integrasi AI, Web/PWA & Operasional Linux',
-      titlePart1: 'Membangun Solusi AI Otomasi, ',
-      titlePart2: 'Full-Stack Web & PWA, dan Sistem Linux Tangguh.',
+      badge: 'Terbuka untuk Remote Engineering, Integrasi AI, Web/PWA & Linux Ops',
+      titlePart1: 'Merakit Agen AI Otonom, ',
+      titlePart2: 'Aplikasi Web/PWA, dan Sistem Linux Self-Hosted.',
       description:
-        'Praktisi Linux (3+ tahun) & AI Systems Integrator dari Nusantara (IKN). Berpengalaman mengintegrasikan agen AI otonom ke WhatsApp, Discord & Telegram, membangun aplikasi Web/PWA modern, dan mengoperasikan fleet Linux ARM64 multi-node dengan otomasi penuh.',
+        'Praktisi Linux (3+ tahun) & AI Systems Integrator di Nusantara (IKN). Menghubungkan agen AI ke WhatsApp, Discord & Telegram, membangun aplikasi Web/PWA, dan menjalankan armada server Linux ARM64 24/7 tanpa ketergantungan SaaS pihak ketiga.',
       downloadCv: 'Unduh CV (PDF)',
-      github: 'GitHub @Marcel-mux',
-      threads: 'Threads @marcelt_0',
-      metrics: {
-        m1Label: 'Oracle Cloud ARM64',
-        m2Value: '10 Layanan',
-        m2Label: 'Daemon systemd Aktif',
-        m3Value: '6 Node',
-        m3Label: 'Tailscale Zero-Trust Mesh',
-        m4Value: '17 Cronjob',
-        m4Label: 'Otomasi & Monitoring',
-      },
+      github: 'GitHub',
+      threads: 'Threads',
+      metaStrip: [
+        'IKN Nusantara (UTC+8)',
+        '3+ Tahun Linux Harian',
+        'Armada Cloud 24 vCPU / 72 GB RAM',
+        '10 Daemon Systemd Aktif',
+      ],
     },
     projects: {
-      sectionPre: '// Karya Terpilih & Studi Kasus',
-      sectionTitle: 'Karya & Produk Terverifikasi',
+      sectionPre: '01 / KARYA TERPILIH',
+      sectionTitle: 'Proyek & Deployment Nyata',
       filterAria: 'Filter proyek berdasarkan kategori',
       tabs: {
         all: 'Semua',
@@ -97,44 +92,55 @@ export const translations = {
         web: 'Web & PWA',
         linux: 'Linux & Cloud',
       },
-      viewCode: 'Lihat Kode Sumber',
+      viewCode: 'Source Code',
       livePreview: 'Buka Web',
     },
     infra: {
-      sectionPre: '// Live Production Infrastructure',
-      sectionTitle: 'Infrastruktur & Layanan Aktif',
+      sectionPre: '02 / INFRASTRUKTUR PRODUKSI',
+      sectionTitle: 'Ops Console & Armada Cloud',
       sectionDesc:
-        'Arsitektur cloud hybrid mandiri yang berjalan 24/7 di atas Oracle Cloud ARM64, terhubung lewat Tailscale mesh terenkripsi, diamankan dengan fail2ban & SSH hardening, dan dipantau 17 cronjob otomatis.',
-      activeServicesBadge: '10 AKTIF',
-      meshNodesBadge: '6 NODE',
-      cronSummary: '17 cronjob · laporan kesehatan 2×/hari · audit keamanan 07:00 WITA',
-      fleetTitle: 'Armada Cloud VM & MicroVM Sandbox',
-      fleetBadge: '24 vCPU / 72 GB RAM TOTAL',
-      fleetDesc:
-        'Kompilasi armada virtual terdistribusi: cloud ARM64 24/7, sandbox komputasi berat x86_64, microVM Firecracker, hingga lingkungan otomasi desktop GUI Windows & Linux.',
-      aiGatewayTitle: '9Router — Multi-Provider AI Gateway',
-      aiGatewayDesc: '22 koneksi · 7 keluarga provider · 5 fallback combo',
+        'Infrastruktur hybrid yang saya operasikan sendiri: Oracle Cloud ARM64 24/7 sebagai pusat kendali, terhubung ke 6 node Tailscale mesh, 6 VM/microVM sandbox, dan 17 cronjob monitoring.',
+      consoleHost: 'muxoracle@oci-arm64 · 140.245.50.98',
+      consoleSummary: '24 vCPU/OCPU · 72 GB RAM · 10 Daemons · 6 Mesh Nodes · 17 Cronjobs',
+      tabs: {
+        fleet: 'Cloud Fleet (6)',
+        services: 'Systemd (10)',
+        mesh: 'Tailscale Mesh (6)',
+        gateway: '9Router Gateway',
+      },
+      headers: {
+        node: 'Node / Provider',
+        spec: 'Spesifikasi & OS',
+        role: 'Peran & Fungsi',
+        status: 'Status',
+        service: 'Unit Systemd',
+        desc: 'Fungsi',
+        bind: 'Port / Bind',
+        host: 'Hostname',
+        hardware: 'Perangkat & OS',
+      },
+      cronSummary: 'Otomasi: 17 cronjobs · laporan kesehatan 09:00 & 21:00 · audit keamanan 07:00 WITA',
+      aiGatewayTitle: '9Router — Self-Hosted Multi-Provider AI Gateway',
+      aiGatewayDesc: '22 koneksi aktif · 7 keluarga provider · 5 fallback combos (:20128)',
     },
     experience: {
-      sectionPre: '// Pengalaman & Pendidikan',
-      sectionTitle: 'Pengalaman & Latar Belakang',
+      sectionPre: '03 / PENGALAMAN & STACK',
+      sectionTitle: 'Latar Belakang & Tech Stack',
+      stackTitle: 'Tech Stack Utama',
       educationTitle: 'Pendidikan',
       school: 'Politeknik Negeri Manado',
-      schoolDetail: 'Politeknik Negeri Manado · Sulawesi Utara, Indonesia',
-      cvPrompt: 'Ingin versi ringkas siap cetak / ATS?',
-      downloadFullCv: 'Unduh CV Lengkap (PDF)',
-    },
-    capabilities: {
-      sectionPre: '// Keahlian Utama & Tech Stack',
-      sectionTitle: 'Keahlian & Spesialisasi',
+      schoolDetail: 'Manado State Polytechnic · Sulawesi Utara',
+      cvPrompt: 'Versi ringkas siap cetak / ATS:',
+      downloadFullCv: 'Unduh CV (PDF)',
     },
     contact: {
-      title: 'Mari Membangun Solusi Bersama',
+      sectionPre: '04 / KONTAK',
+      title: 'Butuh bantuan integrasi AI, Web/PWA, atau Linux?',
       description:
-        'Tersedia untuk proyek integrasi agen AI (WhatsApp/Discord/Telegram), pembuatan webapp & PWA, konsultasi infrastruktur Linux/Cloud, atau peluang remote engineering.',
-      chatWa: 'Chat WhatsApp (+62 897-9360-724)',
+        'Tersedia untuk kerja remote, proyek integrasi bot/agen AI (WhatsApp, Discord, Telegram), pengembangan Web/PWA, atau setup infrastruktur Linux self-hosted.',
+      chatWa: 'WhatsApp (+62 897-9360-724)',
       downloadCv: 'Unduh CV (PDF)',
-      copyEmail: 'Salin Email (marcel.mux@gmail.com)',
+      copyEmail: 'Salin marcel.mux@gmail.com',
       emailCopied: 'Email Tersalin!',
       emailAriaCopied: 'Email marcel.mux@gmail.com berhasil disalin ke clipboard',
     },
@@ -145,38 +151,34 @@ export const translations = {
   en: {
     nav: {
       projects: 'Projects',
-      infra: 'Infrastructure',
-      experience: 'Experience',
-      capabilities: 'Capabilities',
+      infra: 'Ops Console',
+      experience: 'Background',
       contact: 'Contact',
-      hireMe: 'Hire Me',
+      hireMe: 'Contact',
       cv: 'CV',
       switchLang: 'Ganti ke Bahasa Indonesia',
     },
     hero: {
       skipToContent: 'Skip to main content',
       location: 'IKN, Indonesia (WITA / UTC+8)',
-      badge: 'Available for Remote Roles, AI Integrations, Web/PWA & Linux Ops',
-      titlePart1: 'Engineering Autonomous AI Solutions, ',
-      titlePart2: 'Modern Full-Stack Web & PWA, and Resilient Linux Systems.',
+      badge: 'Available for Remote Engineering, AI Integrations, Web/PWA & Linux Ops',
+      titlePart1: 'Building Autonomous AI Agents, ',
+      titlePart2: 'Web/PWA Apps, and Self-Hosted Linux Systems.',
       description:
-        'Linux practitioner (3+ years) & AI Systems Integrator based in Nusantara (IKN). Experienced in orchestrating autonomous AI agents into WhatsApp, Discord & Telegram, building modern Web/PWA applications, and operating multi-node ARM64 Linux fleets with end-to-end automation.',
+        'Linux practitioner (3+ years) & AI Systems Integrator in Nusantara (IKN). I wire autonomous AI agents into WhatsApp, Discord & Telegram, ship fast Web/PWA apps, and operate a 24/7 ARM64 Linux fleet without third-party SaaS lock-in.',
       downloadCv: 'Download CV (PDF)',
-      github: 'GitHub @Marcel-mux',
-      threads: 'Threads @marcelt_0',
-      metrics: {
-        m1Label: 'Oracle Cloud ARM64',
-        m2Value: '10 Services',
-        m2Label: 'Live systemd Daemons',
-        m3Value: '6 Nodes',
-        m3Label: 'Tailscale Zero-Trust Mesh',
-        m4Value: '17 Cronjobs',
-        m4Label: 'Automated Ops & Monitoring',
-      },
+      github: 'GitHub',
+      threads: 'Threads',
+      metaStrip: [
+        'IKN Nusantara (UTC+8)',
+        '3+ Yrs Daily-Driver Linux',
+        '24 vCPU / 72 GB Cloud Fleet',
+        '10 Live systemd Daemons',
+      ],
     },
     projects: {
-      sectionPre: '// Selected Works & Case Studies',
-      sectionTitle: 'Featured Works & Real-World Deployments',
+      sectionPre: '01 / SELECTED WORKS',
+      sectionTitle: 'Real-World Builds & Deployments',
       filterAria: 'Filter projects by category',
       tabs: {
         all: 'All',
@@ -184,44 +186,55 @@ export const translations = {
         web: 'Web & PWA',
         linux: 'Linux & Cloud',
       },
-      viewCode: 'View Source Code',
+      viewCode: 'Source Code',
       livePreview: 'Live Demo',
     },
     infra: {
-      sectionPre: '// Live Production Infrastructure',
-      sectionTitle: 'Infrastructure & Live Services',
+      sectionPre: '02 / PRODUCTION INFRASTRUCTURE',
+      sectionTitle: 'Ops Console & Cloud Fleet',
       sectionDesc:
-        'Self-hosted hybrid cloud architecture running 24/7 on Oracle Cloud ARM64, interconnected via encrypted Tailscale mesh, hardened with fail2ban & SSH security, and continuously monitored by 17 automated cronjobs.',
-      activeServicesBadge: '10 ACTIVE',
-      meshNodesBadge: '6 NODES',
-      cronSummary: '17 cronjobs · health report 2×/day · security audit 07:00 WITA',
-      fleetTitle: 'Cloud VM & MicroVM Sandbox Fleet',
-      fleetBadge: '24 vCPU / 72 GB RAM TOTAL',
-      fleetDesc:
-        'Distributed multi-platform compute fleet: 24/7 ARM64 cloud host, heavy x86_64 compute sandbox, Firecracker microVMs, and full Linux/Windows desktop GUI agent environments.',
-      aiGatewayTitle: '9Router — Multi-Provider AI Gateway',
-      aiGatewayDesc: '22 connections · 7 provider families · 5 fallback combos',
+        'Self-hosted hybrid infrastructure I operate daily: a 24/7 Oracle Cloud ARM64 host bridged to a 6-node Tailscale mesh, 6 cloud VMs/microVMs, and 17 automated monitoring cronjobs.',
+      consoleHost: 'muxoracle@oci-arm64 · 140.245.50.98',
+      consoleSummary: '24 vCPU/OCPU · 72 GB RAM · 10 Daemons · 6 Mesh Nodes · 17 Cronjobs',
+      tabs: {
+        fleet: 'Cloud Fleet (6)',
+        services: 'Systemd (10)',
+        mesh: 'Tailscale Mesh (6)',
+        gateway: '9Router Gateway',
+      },
+      headers: {
+        node: 'Node / Provider',
+        spec: 'Specs & OS',
+        role: 'Workload & Purpose',
+        status: 'Status',
+        service: 'Systemd Unit',
+        desc: 'Purpose',
+        bind: 'Port / Bind',
+        host: 'Hostname',
+        hardware: 'Hardware & OS',
+      },
+      cronSummary: 'Automation: 17 cronjobs · health checks 09:00 & 21:00 · security audit 07:00 WITA',
+      aiGatewayTitle: '9Router — Self-Hosted Multi-Provider AI Gateway',
+      aiGatewayDesc: '22 active connections · 7 provider families · 5 fallback combos (:20128)',
     },
     experience: {
-      sectionPre: '// Experience & Education',
-      sectionTitle: 'Experience & Background',
+      sectionPre: '03 / BACKGROUND & STACK',
+      sectionTitle: 'Experience & Tech Stack',
+      stackTitle: 'Core Stack',
       educationTitle: 'Education',
       school: 'Manado State Polytechnic',
-      schoolDetail: 'Politeknik Negeri Manado · North Sulawesi, Indonesia',
-      cvPrompt: 'Need a concise, ATS-friendly print copy?',
-      downloadFullCv: 'Download Full CV (PDF)',
-    },
-    capabilities: {
-      sectionPre: '// Core Capabilities & Tech Stack',
-      sectionTitle: 'Core Capabilities & Specializations',
+      schoolDetail: 'Politeknik Negeri Manado · North Sulawesi',
+      cvPrompt: 'Print-ready ATS resume:',
+      downloadFullCv: 'Download CV (PDF)',
     },
     contact: {
-      title: "Let's Build Something Great Together",
+      sectionPre: '04 / CONTACT',
+      title: 'Available for remote engineering & AI systems work.',
       description:
-        'Available for AI agent integration projects (WhatsApp/Discord/Telegram), modern webapp & PWA development, Linux/Cloud infrastructure consulting, or remote engineering opportunities.',
-      chatWa: 'Chat via WhatsApp (+62 897-9360-724)',
+        'Open to remote roles, AI agent integrations (WhatsApp, Discord, Telegram), Web/PWA builds, and self-hosted Linux/cloud architecture.',
+      chatWa: 'WhatsApp (+62 897-9360-724)',
       downloadCv: 'Download CV (PDF)',
-      copyEmail: 'Copy Email (marcel.mux@gmail.com)',
+      copyEmail: 'Copy marcel.mux@gmail.com',
       emailCopied: 'Email Copied!',
       emailAriaCopied: 'Email marcel.mux@gmail.com copied to clipboard',
     },
@@ -244,8 +257,8 @@ export const projectItems: ProjectItem[] = [
       en: 'Hermes Cockpit — Retro-Tech Mobile PWA for Hermes Agent',
     },
     desc: {
-      id: 'Progressive Web App (PWA) client mobile-first open-source untuk Nous Research Hermes Agent. Dilengkapi token streaming real-time via WebSocket, interactive thought-process accordion, dedicated profile isolation, zero-dependency reverse proxy (server.mjs) dengan kompresi Brotli/Gzip, audio cues, dan Docker Compose ready.',
-      en: 'Open-source mobile-first Progressive Web App (PWA) client for Nous Research Hermes Agent. Features real-time WebSocket token streaming, interactive thought-process accordion, dedicated profile isolation, zero-dependency reverse proxy (server.mjs) with Brotli/Gzip compression, audio cues, and Docker Compose readiness.',
+      id: 'Client PWA mobile-first open-source untuk Nous Research Hermes Agent. Menyajikan token streaming real-time via WebSocket, thought-process accordion interaktif, isolasi profil, reverse proxy Node.js tanpa dependensi (server.mjs) dengan kompresi Brotli/Gzip, audio cues, serta konfigurasi Docker Compose.',
+      en: 'Open-source mobile-first PWA client for Nous Research Hermes Agent. Streams tokens in real time over WebSockets with an interactive thought-process accordion, isolated profiles, a zero-dependency Node.js reverse proxy (server.mjs) with Brotli/Gzip compression, audio cues, and Docker Compose support.',
     },
     chips: ['React Native / Expo Web', 'TypeScript', 'Tailwind CSS', 'Node.js Proxy', 'WebSockets', 'Docker'],
     image: '/projects/hermes-cockpit-chat-dark.png',
@@ -269,8 +282,8 @@ export const projectItems: ProjectItem[] = [
       en: 'Antigravity Discord Gateway — Persistent Multi-Server Agent Bridge',
     },
     desc: {
-      id: 'Gateway Discord berbasis Python & systemd untuk mengendalikan Google Antigravity CLI (agy) secara remote dari HP maupun desktop. Mendukung sesi persisten per channel, multi-server @mention gating + missed-message backfill, cross-channel #mention context, pencarian histori SQLite FTS5, live streaming dengan auto-split aman blok kode, dan kontrol model/kuota interaktif.',
-      en: 'Production Discord gateway powered by Python & systemd to control Google Antigravity CLI (agy) remotely from mobile or desktop. Supports persistent per-channel sessions, multi-server @mention gating + missed-message backfill, cross-channel #mention context, SQLite FTS5 history search, live streaming with safe code block splitting, and interactive model/quota controls.',
+      id: 'Gateway Discord berbasis Python & systemd untuk mengendalikan Google Antigravity CLI (agy) langsung dari HP maupun desktop. Mendukung sesi persisten per channel, multi-server @mention gating + backfill pesan terlewat, konteks lintas-channel, pencarian histori SQLite FTS5, live streaming dengan pemecah blok kode otomatis, dan kontrol model/kuota.',
+      en: 'Python & systemd Discord bridge that runs Google Antigravity CLI (agy) remotely from phone or desktop. Supports persistent per-channel sessions, multi-server @mention gating with missed-message backfill, cross-channel #mention context, SQLite FTS5 history search, live code-safe message streaming, and interactive model/quota switching.',
     },
     chips: ['Python 3', 'discord.py', 'systemd', 'SQLite FTS5', 'Multi-Server Gating', 'Live Streaming'],
     image: '/projects/antigravity-gateway-arch.png',
@@ -294,8 +307,8 @@ export const projectItems: ProjectItem[] = [
       en: 'Autonomous WhatsApp & Telegram Multi-Agent Engine',
     },
     desc: {
-      id: 'Arsitektur agen bot otonom (Sipuki & Cobra Engine) berbasis Baileys WebSocket & Hermes Gateway. Terhubung langsung ke self-hosted 9Router LLM Gateway, pipeline transkripsi audio/TTS, analisis gambar (Vision), multi-personality routing, dan live parallel web search tanpa ketergantungan langganan SaaS pihak ketiga.',
-      en: 'Autonomous multi-agent architecture (Sipuki & Cobra Engine) built on Baileys WebSocket & Hermes Gateway. Directly connected to self-hosted 9Router LLM Gateway, audio transcription/TTS pipeline, image vision analysis, multi-personality routing, and live parallel web search without third-party SaaS dependencies.',
+      id: 'Mesin bot multi-agen otonom (Sipuki & Cobra) di atas Baileys WebSocket & Hermes Gateway. Terhubung ke 9Router LLM Gateway self-hosted dengan pipeline transkripsi audio/TTS, analisis gambar (Vision), routing multi-persona, dan pencarian web paralel tanpa langganan SaaS pihak ketiga.',
+      en: 'Autonomous multi-agent bot engine (Sipuki & Cobra) built on Baileys WebSocket & Hermes Gateway. Connects directly to a self-hosted 9Router LLM Gateway with audio transcription/TTS pipelines, Vision analysis, multi-persona routing, and parallel web search with zero SaaS fees.',
     },
     chips: ['Node.js', 'Baileys WS', 'Hermes Gateway', '9Router / Gemini', 'systemd Daemons', 'Parallel Search'],
     image: '/projects/whatsapp-cobra.jpg',
@@ -319,8 +332,8 @@ export const projectItems: ProjectItem[] = [
       en: 'Antigravity Guard — Automated OAuth Session Healer for 9Router',
     },
     desc: {
-      id: 'Sistem daemon pengawas otomatis berbasis Python & systemd untuk menjaga reliabilitas akun OAuth Antigravity di dalam 9Router LLM Gateway. Mendeteksi token kadaluarsa lewat SQLite/API probe, memulihkan sesi macet otomatis, dilengkapi proxy lokal anti-WAF (agentrouter-proxy & gemini-web2api).',
-      en: 'Automated supervisory daemon in Python & systemd maintaining Antigravity OAuth session reliability inside 9Router LLM Gateway. Detects expired tokens via SQLite/API probes, auto-heals stale sessions, and features local anti-WAF proxies (agentrouter-proxy & gemini-web2api).',
+      id: 'Daemon Python & systemd yang memantau kesehatan sesi OAuth Antigravity di dalam 9Router. Mendeteksi token kadaluarsa lewat SQLite/API probe, memulihkan sesi macet otomatis, serta dilengkapi proxy bridge lokal anti-WAF (agentrouter-proxy & gemini-web2api).',
+      en: 'Python & systemd watchdog monitoring Antigravity OAuth health inside 9Router. Detects expired tokens via SQLite/API probes, auto-recovers stuck sessions, and pairs with local anti-WAF bridge proxies (agentrouter-proxy & gemini-web2api).',
     },
     chips: ['Python 3', 'Node.js Proxy', 'OAuth Lifecycle', 'systemd Watchdog', '9Router API', 'SQLite Probes'],
     image: '/projects/system-architecture.png',
@@ -336,16 +349,16 @@ export const projectItems: ProjectItem[] = [
     id: 'finpulse',
     categories: ['web'],
     tag: {
-      id: 'FINANCIAL SAAS & DATA ANALYTICS',
-      en: 'FINANCIAL SAAS & DATA ANALYTICS',
+      id: 'FINANCIAL TRACKER & ANALYTICS',
+      en: 'FINANCIAL TRACKER & ANALYTICS',
     },
     title: {
       id: 'FinPulse — Personal Financial Tracker & Analytics Platform',
       en: 'FinPulse — Personal Financial Tracker & Analytics Platform',
     },
     desc: {
-      id: 'Platform pencatat dan analisis kekayaan bersih (Net Worth), multi-rekening, hingga pelacakan limit kredit & cicilan secara real-time. Dilengkapi fitur Chatbot QA pintar, visualisasi grafik interaktif, dan integrasi notifikasi bot Telegram.',
-      en: 'Personal net worth tracker and financial analytics platform managing multi-account balances, credit limit usage, and installment schedules. Features an intelligent AI Q&A chatbot, interactive data visualization charts, and automated Telegram bot alert integrations.',
+      id: 'Aplikasi pencatat Net Worth, saldo multi-rekening, serta pelacakan limit kredit dan cicilan secara real-time. Dilengkapi chatbot tanya-jawab keuangan, grafik interaktif, dan notifikasi otomatis ke bot Telegram.',
+      en: 'Net worth tracker managing multi-account balances, credit utilization, and installment schedules in real time. Includes an AI financial Q&A chat, interactive charts, and automated Telegram alert webhooks.',
     },
     chips: ['Next.js 14', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'Tailwind CSS', 'Vercel'],
     image: '/projects/finpulse-charts.jpg',
@@ -361,16 +374,16 @@ export const projectItems: ProjectItem[] = [
     id: 'linux-infra',
     categories: ['linux'],
     tag: {
-      id: 'MULTI-NODE CLOUD MESH & DEVOPS AUTOMATION',
-      en: 'MULTI-NODE CLOUD MESH & DEVOPS AUTOMATION',
+      id: 'MULTI-NODE CLOUD MESH & DEVOPS',
+      en: 'MULTI-NODE CLOUD MESH & DEVOPS',
     },
     title: {
       id: 'Distributed 6-Node Zero-Trust Mesh & Self-Hosted AI Gateway Fleet',
       en: 'Distributed 6-Node Zero-Trust Mesh & Self-Hosted AI Gateway Fleet',
     },
     desc: {
-      id: 'Infrastruktur hybrid di atas Oracle Cloud Always Free Ampere A1 (4 OCPU / 24 GB RAM ARM64 / 200 GB NVMe) plus perangkat edge (ThinkPad CachyOS, EndeavourOS, Android/Termux) dan ephemeral sandboxes. Terhubung lewat Tailscale Zero-Trust mesh, menjalankan 10 service systemd produksi, gateway AI multi-provider, dan 17 cronjob pemantauan serta audit keamanan.',
-      en: 'Hybrid infrastructure across Oracle Cloud Always Free Ampere A1 (4 OCPU / 24 GB RAM ARM64 / 200 GB NVMe) plus edge devices (ThinkPad on CachyOS, EndeavourOS, Android/Termux) and ephemeral sandboxes. Interconnected via Tailscale Zero-Trust mesh, running 10 production systemd services, multi-provider AI gateway, and 17 automated health/security cronjobs.',
+      id: 'Arsitektur hybrid di atas Oracle Cloud Ampere A1 (4 OCPU / 24 GB RAM ARM64 / 200 GB NVMe), laptop edge (CachyOS & EndeavourOS), Android/Termux, serta cloud sandboxes (Cue, InstaBox, Freestyle, Simular). Tersambung lewat Tailscale Zero-Trust mesh dengan Fail2ban & SSH hardening.',
+      en: 'Hybrid fleet anchored on Oracle Cloud Ampere A1 (4 OCPU / 24 GB RAM ARM64 / 200 GB NVMe), edge laptops (CachyOS & EndeavourOS), Android/Termux, and cloud sandboxes (Cue, InstaBox, Freestyle, Simular) over a Tailscale Zero-Trust mesh with Fail2ban & hardened SSH.',
     },
     chips: [
       'Oracle Cloud A1 ARM64',
@@ -478,19 +491,19 @@ export const meshNodes: MeshNode[] = [
   {
     host: 'muxoracle',
     spec: 'Oracle Cloud · 4 OCPU / 24 GB ARM64',
-    role: { id: 'Core / Utama (24/7 Mothership)', en: 'Core / Primary (24/7 Mothership)' },
+    role: { id: 'Core Host (24/7 Production)', en: 'Core Host (24/7 Production)' },
     status: 'online',
   },
   {
     host: 'muxcue',
     spec: 'Manus Cloud VM · 8 vCPU / 24 GB x86_64',
-    role: { id: 'Heavy Compute & Dev Sandbox', en: 'Heavy Compute & Dev Sandbox' },
+    role: { id: 'Heavy Compute & Build Sandbox', en: 'Heavy Compute & Build Sandbox' },
     status: 'online',
   },
   {
     host: 'cachyos-ltx13g1',
     spec: 'ThinkPad X13 Gen 1 AMD · CachyOS',
-    role: { id: 'Laptop Harian (Daily Driver)', en: 'Daily Driver Laptop' },
+    role: { id: 'Daily Driver Laptop', en: 'Daily Driver Laptop' },
     status: 'edge',
   },
   {
@@ -502,7 +515,7 @@ export const meshNodes: MeshNode[] = [
   {
     host: 'infinix-gt-30-pro',
     spec: 'Infinix GT 30 Pro · Termux SSH',
-    role: { id: 'Node Operasi Mobile', en: 'Mobile Ops Node' },
+    role: { id: 'Mobile Ops Node', en: 'Mobile Ops Node' },
     status: 'edge',
   },
   {
@@ -521,12 +534,11 @@ export const cloudFleetNodes: CloudFleetNode[] = [
     spec: '4 OCPU ARM64 · 24 GB RAM · 200 GB NVMe',
     os: 'Ubuntu 26.04 LTS',
     role: {
-      id: 'Pusat Kendali 24/7: Menjalankan 9Router, Hermes Gateway, Bot WA Sipuki/Cobra, PWA Cockpit, & 17 cronjob.',
-      en: '24/7 Core Mothership: Runs 9Router AI Gateway, Hermes Gateway, Sipuki/Cobra WA bots, Cockpit PWA, & 17 cronjobs.',
+      id: 'Host produksi 24/7: 9Router, Hermes Gateway, Bot WA Sipuki/Cobra, Cockpit PWA, 17 cronjobs.',
+      en: '24/7 production host: 9Router, Hermes Gateway, Sipuki/Cobra WA bots, Cockpit PWA, 17 cronjobs.',
     },
-    statusLabel: { id: 'Aktif 24/7', en: '24/7 Online' },
+    statusLabel: { id: 'Online 24/7', en: '24/7 Online' },
     statusType: 'online',
-    iconType: 'server',
   },
   {
     id: 'cue',
@@ -535,54 +547,50 @@ export const cloudFleetNodes: CloudFleetNode[] = [
     spec: '8 vCPU x86_64 · 24 GB RAM · 70 GB SSD',
     os: 'Ubuntu 24.04 LTS',
     role: {
-      id: 'Sandbox komputasi berat, Next.js build, DeepSeek test harness, dengan keepalive watchdog Hermes.',
-      en: 'Heavy compute sandbox, Next.js builds, DeepSeek test harness, with Hermes keepalive watchdog.',
+      id: 'Komputasi berat x86_64, Next.js builds, DeepSeek harness, keepalive watchdog aktif.',
+      en: 'Heavy x86_64 compute, Next.js builds, DeepSeek harness, active keepalive watchdog.',
     },
-    statusLabel: { id: 'Siaga / Watchdog', en: 'Watchdog Active' },
+    statusLabel: { id: 'Watchdog', en: 'Watchdog' },
     statusType: 'watchdog',
-    iconType: 'cpu',
   },
   {
     id: 'instabox',
     name: 'InstaBox (agent-browser)',
     provider: 'Firecracker MicroVM',
     spec: '4 vCPU · 8 GB RAM · 36 GB Storage',
-    os: 'Isolated Linux MicroVM',
+    os: 'Linux MicroVM',
     role: {
-      id: 'Automasi web browser headless cepat, web scraping JavaScript berat, & eksekusi terisolasi.',
-      en: 'Ultra-fast headless browser automation, dynamic JavaScript scraping, & sandboxed execution.',
+      id: 'Otomasi headless browser cepat & web scraping JS berat di lingkungan terisolasi.',
+      en: 'Fast headless browser automation & dynamic JS scraping in an isolated MicroVM.',
     },
     statusLabel: { id: 'Auto-Wake API', en: 'Auto-Wake API' },
     statusType: 'autowake',
-    iconType: 'browser',
   },
   {
     id: 'freestyle',
     name: 'Freestyle.sh (mux-fssh)',
-    provider: 'Freestyle Cloud MicroVM',
+    provider: 'Freestyle MicroVM',
     spec: '4 vCPU · 8 GB RAM · 32 GB NVMe',
     os: 'Ubuntu 24.04 LTS',
     role: {
-      id: 'Disposable sandbox pengujian kode bebas & runner kompilasi on-demand via direct CLI.',
-      en: 'Disposable testing sandbox & on-demand build runner with instant CLI access.',
+      id: 'Disposable sandbox untuk uji coba kode & build runner on-demand via direct CLI.',
+      en: 'Disposable testing sandbox & on-demand build runner over direct CLI.',
     },
     statusLabel: { id: 'Auto-Wake CLI', en: 'Auto-Wake CLI' },
     statusType: 'autowake',
-    iconType: 'terminal',
   },
   {
     id: 'simularbox',
     name: 'Simular Box (main)',
     provider: 'Simular Cloud Desktop',
     spec: '2 vCPU AMD EPYC · 4 GB RAM · 20 GB SSD',
-    os: 'Ubuntu 24.04 XFCE Desktop',
+    os: 'Ubuntu 24.04 XFCE',
     role: {
-      id: 'Automasi GUI desktop Linux & pengujian agen interaktif computer-use via MCP + Live View.',
-      en: 'Linux desktop GUI automation & computer-use interactive agent testing via MCP + Live View.',
+      id: 'Otomasi GUI desktop Linux & pengujian agen computer-use via MCP + Live View.',
+      en: 'Linux desktop GUI automation & computer-use agent runs over MCP + Live View.',
     },
     statusLabel: { id: 'Hibernate / MCP', en: 'Hibernate / MCP' },
     statusType: 'standby',
-    iconType: 'monitor',
   },
   {
     id: 'simularai',
@@ -591,12 +599,11 @@ export const cloudFleetNodes: CloudFleetNode[] = [
     spec: '2 vCPU · 4 GB RAM · ~40 GB Ephemeral',
     os: 'Windows 10 Pro',
     role: {
-      id: 'Automasi aplikasi Windows murni (.exe & native GUI) untuk workflow otomasi lintas OS.',
-      en: 'Native Windows desktop automation (.exe & native UI) for cross-platform agent workflows.',
+      id: 'Otomasi aplikasi native Windows (.exe & desktop UI) untuk workflow lintas OS.',
+      en: 'Native Windows app automation (.exe & desktop UI) for cross-OS workflows.',
     },
-    statusLabel: { id: 'Standby / Lease', en: 'Standby / Lease' },
+    statusLabel: { id: 'Standby / API', en: 'Standby / API' },
     statusType: 'standby',
-    iconType: 'box',
   },
 ];
 
@@ -609,8 +616,8 @@ export const experienceItems: ExperienceItem[] = [
       en: '3+ Years – Present',
     },
     summary: {
-      id: 'Merancang, membangun, dan mengoperasikan sistem agen AI otonom, aplikasi Web/PWA modern, serta infrastruktur Linux & cloud self-hosted secara end-to-end hingga produksi 24/7.',
-      en: 'Architecting, building, and operating autonomous AI agent systems, modern Web/PWA applications, and self-hosted Linux & cloud infrastructure end-to-end in 24/7 production.',
+      id: 'Membangun dan mengoperasikan sistem agen AI otonom, aplikasi Web/PWA, serta server Linux self-hosted secara end-to-end hingga produksi 24/7.',
+      en: 'Building and operating autonomous AI agent systems, Web/PWA applications, and self-hosted Linux servers end-to-end in 24/7 production.',
     },
   },
   {
@@ -621,52 +628,40 @@ export const experienceItems: ExperienceItem[] = [
       en: '3 Years – Present',
     },
     summary: {
-      id: 'Mengelola operasional kafe harian secara mandiri penuh — manajemen stok/restock, produksi minuman, quality control, dan layanan pelanggan — melatih disiplin operasional, konsistensi, dan ownership tinggi.',
-      en: 'Independently managing full daily cafe operations — inventory/restock logistics, beverage production, quality control, and customer service — forging high operational discipline, consistency, and relentless ownership.',
+      id: 'Menjalankan operasional kafe seorang diri setiap hari — kontrol stok, racik minuman, quality check, dan layanan pelanggan langsung. Terbiasa kerja di bawah tekanan dan pegang tanggung jawab penuh.',
+      en: 'Ran daily cafe operations solo — inventory control, beverage prep, quality checks, and direct customer service. Built steady execution under rush hours and full accountability.',
     },
   },
 ];
 
-export const capabilityCards: CapabilityCard[] = [
+export const stackRows: StackRow[] = [
   {
-    title: 'AI Systems & Agents',
-    desc: {
-      id: 'Membangun agen AI otonom mandiri yang hemat biaya, terhubung ke WhatsApp, Discord & Telegram, dengan live parallel search, vision, dan integrasi tools.',
-      en: 'Building cost-effective autonomous AI agents connected to WhatsApp, Discord & Telegram, equipped with live parallel search, vision models, and robust tool calling.',
-    },
+    area: { id: 'AI & Agents', en: 'AI & Agents' },
     items: [
-      'Multi-Agent Orchestration (Hermes & Agy)',
-      'WhatsApp Baileys, Discord & Telegram Bots',
-      'Self-Hosted LLM Gateway (9Router)',
-      'WebSocket Real-Time Token Streaming',
-      'Vision & Audio/TTS Pipeline',
+      'Hermes & Antigravity CLI',
+      '9Router LLM Gateway',
+      'Baileys WA / discord.py / Telegram',
+      'WebSocket Token Streaming',
+      'Vision & Audio/TTS Pipelines',
     ],
   },
   {
-    title: 'Modern Web & Mobile PWA',
-    desc: {
-      id: 'Mengembangkan aplikasi web dan Progressive Web Apps (PWA) responsif berstandar modern dengan arsitektur terstruktur dan performa tinggi.',
-      en: 'Developing responsive web applications and Progressive Web Apps (PWAs) with modern production standards, clean architecture, and blazing performance.',
-    },
+    area: { id: 'Web & Mobile PWA', en: 'Web & Mobile PWA' },
     items: [
       'Next.js App Router & React',
-      'React Native / Expo Web PWA',
-      'TypeScript & Strict System Design',
-      'Prisma ORM, PostgreSQL & SQLite FTS5',
-      'Zero-Dependency Node.js Reverse Proxy',
+      'React Native / Expo Web',
+      'TypeScript & Tailwind CSS',
+      'Prisma, PostgreSQL & SQLite FTS5',
+      'Zero-Dep Node.js Reverse Proxy',
     ],
   },
   {
-    title: 'Linux & Cloud Systems',
-    desc: {
-      id: 'Mengelola fleet Linux hybrid multi-node: cloud ARM64, laptop Arch-based, dan node Android — semuanya tersambung mesh terenkripsi dengan otomasi penuh.',
-      en: 'Operating a hybrid multi-node Linux fleet: ARM64 cloud, Arch-based laptops, and Android nodes — all connected over an encrypted mesh with full automation.',
-    },
+    area: { id: 'Linux & Cloud', en: 'Linux & Cloud' },
     items: [
-      '3+ Years Linux (EndeavourOS / CachyOS)',
+      'EndeavourOS / CachyOS / Ubuntu',
       'Oracle Cloud ARM64 (4 OCPU / 24GB)',
-      '6-Node Tailscale Zero-Trust Mesh',
-      '10 systemd Services + Python Auto-Healers',
+      '6-Node Tailscale Mesh',
+      '10 systemd Services + Watchdogs',
       'Fail2ban, SSH Hardening & 17 Cronjobs',
     ],
   },

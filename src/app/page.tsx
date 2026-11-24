@@ -1,29 +1,22 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import {
   Sun,
   Moon,
   ArrowUpRight,
   Terminal,
   Cpu,
-  ShieldCheck,
   MessageSquare,
   Code2,
   Copy,
   Check,
   Server,
-  Smartphone,
   Download,
   AtSign,
-  Briefcase,
-  GraduationCap,
   Globe,
-  Layers,
-  Monitor,
-  Box,
   X,
   ZoomIn,
 } from 'lucide-react';
@@ -34,9 +27,10 @@ import {
   meshNodes,
   cloudFleetNodes,
   experienceItems,
-  capabilityCards,
+  stackRows,
   type Lang,
   type TabKey,
+  type InfraTabKey,
 } from '../data/translations';
 
 type Scheme = 'dark' | 'light';
@@ -69,17 +63,13 @@ export default function Home() {
   const [resolvedTheme, setResolvedTheme] = useState<Scheme>('dark');
   const [lang, setLang] = useState<Lang>('id');
   const [activeTab, setActiveTab] = useState<TabKey>('all');
+  const [infraTab, setInfraTab] = useState<InfraTabKey>('fleet');
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
 
-  useEffect(() => {
-    if (!lightboxImage) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setLightboxImage(null);
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [lightboxImage]);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const dialogContentRef = useRef<HTMLDivElement | null>(null);
+  const pressedOutsideRef = useRef(false);
 
   const syncFromPreference = useCallback(() => {
     const override = getStoredOverride();
@@ -100,7 +90,6 @@ export default function Home() {
 
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handleMediaChange = () => {
-      // Only react when following system default; never erase an explicit stored override.
       const override = getStoredOverride();
       if (!override) {
         const next = mq.matches ? 'dark' : 'light';
@@ -125,6 +114,26 @@ export default function Home() {
       window.removeEventListener('storage', handleStorage);
     };
   }, [syncFromPreference]);
+
+  // Native <dialog> modal lifecycle (top-layer, Esc dismissal, focus return)
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    if (lightboxImage) {
+      if (!dialog.open) {
+        dialog.showModal();
+      }
+    } else if (dialog.open) {
+      dialog.close();
+    }
+  }, [lightboxImage]);
+
+  const isOutsideDialogContent = (e: React.PointerEvent<HTMLDialogElement>): boolean => {
+    const content = dialogContentRef.current;
+    if (!content) return true;
+    const r = content.getBoundingClientRect();
+    return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+  };
 
   const toggleTheme = () => {
     const system = getSystemScheme();
@@ -168,817 +177,822 @@ export default function Home() {
     activeTab === 'all' ? projectItems : projectItems.filter((p) => p.categories.includes(activeTab));
 
   return (
-    <div className="min-h-screen bg-white text-[#171717] dark:bg-[#08090a] dark:text-[#f7f8f8] transition-colors duration-200">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#171717] focus:text-white dark:focus:bg-[#5e6ad2] focus:text-xs focus:font-medium focus:shadow-lg"
-      >
-        {t.hero.skipToContent}
-      </a>
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f5f6f8] transition-colors duration-200">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#111214] focus:text-white dark:focus:bg-[#0066ff] focus:text-xs focus:font-medium focus:shadow-lg"
+        >
+          {t.hero.skipToContent}
+        </a>
 
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 bg-white/85 dark:bg-[#08090a]/85 backdrop-blur-md border-b border-black/5 dark:border-white/10">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative w-14 h-9 rounded-lg overflow-hidden border border-black/10 dark:border-white/20 shadow-sm bg-black shrink-0">
-              <Image
-                src="/logo.png"
-                alt="MT Logo — Marcelino M. Turangan"
-                fill
-                sizes="56px"
-                className="object-contain"
-              />
-            </div>
-            <div>
-              <span className="font-medium text-sm tracking-tight block">Marcelino M. Turangan</span>
-              <span className="text-[11px] text-black/50 dark:text-white/40 font-mono block -mt-0.5">
-                {t.hero.location}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <nav
-              aria-label="Primary"
-              className="hidden md:flex items-center gap-5 text-xs font-medium text-black/60 dark:text-white/60 mr-2"
-            >
-              <a href="#projects" className="hover:text-black dark:hover:text-white transition-colors">
-                {t.nav.projects}
-              </a>
-              <a href="#infra" className="hover:text-black dark:hover:text-white transition-colors">
-                {t.nav.infra}
-              </a>
-              <a href="#background" className="hover:text-black dark:hover:text-white transition-colors">
-                {t.nav.experience}
-              </a>
-              <a href="#skills" className="hover:text-black dark:hover:text-white transition-colors">
-                {t.nav.capabilities}
-              </a>
-              <a href="#contact" className="hover:text-black dark:hover:text-white transition-colors">
-                {t.nav.contact}
-              </a>
-            </nav>
-
-            {/* Language Switcher */}
-            <button
-              type="button"
-              onClick={toggleLang}
-              aria-label={t.nav.switchLang}
-              className="px-2.5 py-1.5 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-mono font-medium text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white transition-all inline-flex items-center gap-1.5"
-            >
-              <Globe size={14} aria-hidden="true" />
-              <span>{lang === 'id' ? 'EN' : 'ID'}</span>
-            </button>
-
-            {/* Theme Toggle */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label={resolvedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-              className="p-2 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white transition-all"
-            >
-              {resolvedTheme === 'dark' ? (
-                <Sun size={15} aria-hidden="true" />
-              ) : (
-                <Moon size={15} aria-hidden="true" />
-              )}
-            </button>
-
-            <a
-              href="/CV_Marcelino_M_Turangan.pdf"
-              download="CV_Marcelino_M_Turangan.pdf"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
-            >
-              <Download size={13} aria-hidden="true" />
-              {t.nav.cv}
-            </a>
-
-            <a
-              href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20dengan%20portofolio%20Anda"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
-            >
-              {t.nav.hireMe}
-            </a>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-6 pt-12 pb-24">
-        {/* Hero Section */}
-        <section className="mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/70 dark:text-white/70 mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-            {t.hero.badge}
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="md:col-span-2"
-            >
-              <h1
-                id="main-content"
-                tabIndex={-1}
-                className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.08] mb-6"
-              >
-                {t.hero.titlePart1}
-                <span className="text-black/40 dark:text-white/40">
-                  {t.hero.titlePart2}
+        {/* Navbar */}
+        <header className="sticky top-0 z-50 bg-white/90 dark:bg-[#08090a]/90 backdrop-blur-md border-b border-black/[0.08] dark:border-white/[0.08]">
+          <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="relative w-14 h-9 rounded-lg overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="MT Logo — Marcelino M. Turangan"
+                  fill
+                  sizes="56px"
+                  className="object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <span className="font-display font-semibold text-sm tracking-tight block truncate">
+                  Marcelino M. Turangan
                 </span>
-              </h1>
-              <p className="text-base sm:text-lg text-black/70 dark:text-white/70 leading-relaxed max-w-xl mb-8">
-                {t.hero.description}
-              </p>
-
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="/CV_Marcelino_M_Turangan.pdf"
-                  download="CV_Marcelino_M_Turangan.pdf"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
-                >
-                  <Download size={16} aria-hidden="true" />
-                  {t.hero.downloadCv}
-                </a>
-                <a
-                  href="https://github.com/Marcel-mux"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
-                >
-                  <Code2 size={16} aria-hidden="true" />
-                  {t.hero.github}
-                  <ArrowUpRight size={14} className="opacity-60" aria-hidden="true" />
-                </a>
-                <a
-                  href="https://www.threads.net/@marcelt_0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
-                >
-                  <AtSign size={16} aria-hidden="true" />
-                  {t.hero.threads}
-                  <ArrowUpRight size={14} className="opacity-60" aria-hidden="true" />
-                </a>
+                <span className="text-[11px] text-black/55 dark:text-white/45 font-mono block -mt-0.5 truncate">
+                  {t.hero.location}
+                </span>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Profile Photo Card */}
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+              <nav
+                aria-label="Primary"
+                className="hidden md:flex items-center gap-5 text-xs font-medium text-black/60 dark:text-white/60 mr-2"
+              >
+                <a href="#projects" className="hover:text-black dark:hover:text-white transition-colors">
+                  {t.nav.projects}
+                </a>
+                <a href="#infra" className="hover:text-black dark:hover:text-white transition-colors">
+                  {t.nav.infra}
+                </a>
+                <a href="#background" className="hover:text-black dark:hover:text-white transition-colors">
+                  {t.nav.experience}
+                </a>
+                <a href="#contact" className="hover:text-black dark:hover:text-white transition-colors">
+                  {t.nav.contact}
+                </a>
+              </nav>
+
+              <button
+                type="button"
+                onClick={toggleLang}
+                aria-label={t.nav.switchLang}
+                className="px-2.5 py-1.5 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-xs font-mono font-medium text-black/75 dark:text-white/75 hover:text-black dark:hover:text-white hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center gap-1.5"
+              >
+                <Globe size={13} aria-hidden="true" />
+                <span>{lang === 'id' ? 'EN' : 'ID'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label={resolvedTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+                className="p-2 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/75 dark:text-white/75 hover:text-black dark:hover:text-white hover:border-black/20 dark:hover:border-white/20 transition-all"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <Sun size={15} aria-hidden="true" />
+                ) : (
+                  <Moon size={15} aria-hidden="true" />
+                )}
+              </button>
+
+              <a
+                href="/CV_Marcelino_M_Turangan.pdf"
+                download="CV_Marcelino_M_Turangan.pdf"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/80 dark:text-white/80 hover:bg-black/[0.08] dark:hover:bg-white/[0.1] transition-all"
+              >
+                <Download size={13} aria-hidden="true" />
+                {t.nav.cv}
+              </a>
+
+              <a
+                href="#contact"
+                className="text-xs font-medium px-3.5 py-1.5 rounded-md bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+              >
+                {t.nav.hireMe}
+              </a>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="max-w-5xl mx-auto px-6 pt-12 pb-20">
+          {/* Hero Section (Decide Surface) */}
+          <section className="mb-20">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative aspect-square max-w-[280px] mx-auto md:ml-auto w-full rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg dark:shadow-2xl bg-black/5 dark:bg-white/5 group"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.08] dark:border-white/[0.08] text-black/70 dark:text-white/70 mb-7"
             >
-              <Image
-                src="/projects/profile.jpg"
-                alt="Marcelino M. Turangan"
-                fill
-                sizes="(max-width: 768px) 280px, 280px"
-                priority
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                <span className="text-white text-xs font-mono">Marcelino M. Turangan • IKN</span>
-              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse" aria-hidden="true" />
+              {t.hero.badge}
             </motion.div>
-          </div>
 
-          {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-black/5 dark:border-white/10">
-            <div className="p-3.5 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-              <div className="font-mono text-xl font-medium text-indigo-500 dark:text-brand-glow">4 OCPU / 24GB</div>
-              <div className="text-xs text-black/50 dark:text-white/40">{t.hero.metrics.m1Label}</div>
-            </div>
-            <div className="p-3.5 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-              <div className="font-mono text-xl font-medium text-emerald-500">{t.hero.metrics.m2Value}</div>
-              <div className="text-xs text-black/50 dark:text-white/40">{t.hero.metrics.m2Label}</div>
-            </div>
-            <div className="p-3.5 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-              <div className="font-mono text-xl font-medium">{t.hero.metrics.m3Value}</div>
-              <div className="text-xs text-black/50 dark:text-white/40">{t.hero.metrics.m3Label}</div>
-            </div>
-            <div className="p-3.5 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-              <div className="font-mono text-xl font-medium">{t.hero.metrics.m4Value}</div>
-              <div className="text-xs text-black/50 dark:text-white/40">{t.hero.metrics.m4Label}</div>
-            </div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" className="mb-20">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-black/40 dark:text-brand-glow block mb-1">
-                {t.projects.sectionPre}
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-medium tracking-tight">{t.projects.sectionTitle}</h2>
-            </div>
-
-            {/* Filter Buttons */}
-            <div
-              role="group"
-              aria-label={t.projects.filterAria}
-              className="inline-flex p-1 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-xs font-medium"
-            >
-              {(
-                [
-                  { key: 'all', label: t.projects.tabs.all },
-                  { key: 'ai', label: t.projects.tabs.ai },
-                  { key: 'web', label: t.projects.tabs.web },
-                  { key: 'linux', label: t.projects.tabs.linux },
-                ] as const
-              ).map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  aria-pressed={activeTab === tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`px-3 py-1.5 rounded-md transition-all uppercase tracking-wider text-[11px] font-mono ${
-                    activeTab === tab.key
-                      ? 'bg-white text-black dark:bg-white/10 dark:text-white shadow-sm'
-                      : 'text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white'
-                  }`}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center mb-10">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.05 }}
+                className="md:col-span-8"
+              >
+                <h1
+                  id="main-content"
+                  tabIndex={-1}
+                  className="font-display text-4xl sm:text-5xl lg:text-[54px] font-semibold tracking-[-0.035em] leading-[1.06] mb-6"
                 >
-                  {tab.label}
-                </button>
+                  {t.hero.titlePart1}
+                  <span className="text-black/45 dark:text-white/45">{t.hero.titlePart2}</span>
+                </h1>
+                <p className="text-base sm:text-[17px] text-black/70 dark:text-white/70 leading-relaxed max-w-2xl mb-8">
+                  {t.hero.description}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <a
+                    href="/CV_Marcelino_M_Turangan.pdf"
+                    download="CV_Marcelino_M_Turangan.pdf"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                  >
+                    <Download size={15} aria-hidden="true" />
+                    {t.hero.downloadCv}
+                  </a>
+                  <a
+                    href="https://github.com/Marcel-mux"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                  >
+                    <Code2 size={15} aria-hidden="true" />
+                    {t.hero.github}
+                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                  </a>
+                  <a
+                    href="https://www.threads.net/@marcelt_0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                  >
+                    <AtSign size={15} aria-hidden="true" />
+                    {t.hero.threads}
+                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                  </a>
+                </div>
+              </motion.div>
+
+              {/* Profile Photo */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.45, delay: 0.1 }}
+                className="md:col-span-4 relative aspect-square max-w-[260px] mx-auto md:ml-auto w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 group"
+              >
+                <Image
+                  src="/projects/profile.jpg"
+                  alt="Marcelino M. Turangan"
+                  fill
+                  sizes="(max-width: 768px) 260px, 260px"
+                  priority
+                  className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent p-3.5">
+                  <span className="text-white text-[11px] font-mono tracking-tight block">
+                    Marcelino M. Turangan · IKN
+                  </span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Single-line Hairline Metadata Strip (replaces redundant 4-box monument stats) */}
+            <div className="pt-4 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-black/55 dark:text-white/50">
+              {t.hero.metaStrip.map((item, idx) => (
+                <span key={item} className="inline-flex items-center gap-2">
+                  {idx > 0 && <span className="text-black/20 dark:text-white/20" aria-hidden="true">/</span>}
+                  <span>{item}</span>
+                </span>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Project Cards */}
-          <div className="space-y-6">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.article
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  className="rounded-2xl p-6 sm:p-8 bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all group"
-                >
-                  <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
-                    {/* Media Gallery */}
-                    {project.mediaLayout === 'portrait-pair' ? (
-                      <div className="w-full lg:w-[340px] shrink-0 grid grid-cols-2 gap-2.5">
-                        {[
-                          { src: project.image, alt: project.title[lang] },
-                          { src: project.imageSecondary, alt: `${project.title[lang]} - Detail` },
-                        ].map((media) => (
+          {/* 01 / Projects Section (Explore + Decide Surface) */}
+          <section id="projects" className="mb-24">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-4 border-b border-black/[0.08] dark:border-white/[0.08]">
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+                  {t.projects.sectionPre}
+                </span>
+                <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em]">
+                  {t.projects.sectionTitle}
+                </h2>
+              </div>
+
+              {/* Filter Buttons */}
+              <div
+                role="group"
+                aria-label={t.projects.filterAria}
+                className="inline-flex p-1 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-xs font-medium self-start sm:self-auto"
+              >
+                {(
+                  [
+                    { key: 'all', label: t.projects.tabs.all },
+                    { key: 'ai', label: t.projects.tabs.ai },
+                    { key: 'web', label: t.projects.tabs.web },
+                    { key: 'linux', label: t.projects.tabs.linux },
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    aria-pressed={activeTab === tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`px-3 py-1.5 rounded-md transition-all uppercase tracking-wider text-[11px] font-mono ${
+                      activeTab === tab.key
+                        ? 'bg-white text-[#111214] dark:bg-[#0066ff] dark:text-white shadow-sm'
+                        : 'text-black/55 dark:text-white/55 hover:text-black dark:hover:text-white'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Project Rows */}
+            <div className="space-y-6">
+              <AnimatePresence mode="popLayout">
+                {filteredProjects.map((project) => (
+                  <motion.article
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.99 }}
+                    transition={{ duration: 0.25 }}
+                    className="rounded-xl p-5 sm:p-7 bg-[#fafafa] dark:bg-[#0e0f11] border border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-colors group"
+                  >
+                    <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                      {/* Uncropped Media Gallery */}
+                      {project.mediaLayout === 'portrait-pair' ? (
+                        <div className="w-full lg:w-[340px] shrink-0 grid grid-cols-2 gap-2.5">
+                          {[
+                            { src: project.image, alt: project.title[lang] },
+                            { src: project.imageSecondary, alt: `${project.title[lang]} - Detail` },
+                          ].map((media) => (
+                            <button
+                              key={media.src}
+                              type="button"
+                              onClick={() => setLightboxImage(media)}
+                              aria-label={`Zoom ${media.alt}`}
+                              className="relative aspect-[9/20] w-full rounded-lg overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/50 group/img cursor-zoom-in focus:outline-none"
+                            >
+                              <Image
+                                src={media.src}
+                                alt={media.alt}
+                                fill
+                                sizes="(max-width: 1024px) 50vw, 170px"
+                                className="object-contain p-0.5 group-hover/img:scale-[1.02] transition-transform duration-300"
+                              />
+                              <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                                <ZoomIn size={12} aria-hidden="true" />
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="w-full lg:w-[340px] shrink-0 space-y-2.5">
                           <button
-                            key={media.src}
                             type="button"
-                            onClick={() => setLightboxImage(media)}
-                            aria-label={`Zoom ${media.alt}`}
-                            className="relative aspect-[9/20] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 group/img cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
+                            onClick={() => setLightboxImage({ src: project.image, alt: project.title[lang] })}
+                            aria-label={`Zoom ${project.title[lang]}`}
+                            className="relative aspect-[4/3] w-full rounded-lg overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/50 group/img cursor-zoom-in block focus:outline-none"
                           >
                             <Image
-                              src={media.src}
-                              alt={media.alt}
+                              src={project.image}
+                              alt={project.title[lang]}
                               fill
-                              sizes="(max-width: 1024px) 50vw, 170px"
-                              className="object-contain p-0.5 group-hover/img:scale-[1.03] transition-transform duration-300"
+                              sizes="(max-width: 1024px) 100vw, 340px"
+                              className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
                             />
-                            <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
-                              <ZoomIn size={12} aria-hidden="true" />
+                            <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                              <ZoomIn size={13} aria-hidden="true" />
                             </span>
                           </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="w-full lg:w-[340px] shrink-0 space-y-3">
-                        <button
-                          type="button"
-                          onClick={() => setLightboxImage({ src: project.image, alt: project.title[lang] })}
-                          aria-label={`Zoom ${project.title[lang]}`}
-                          className="relative aspect-[4/3] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 group/img cursor-zoom-in block focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
-                        >
-                          <Image
-                            src={project.image}
-                            alt={project.title[lang]}
-                            fill
-                            sizes="(max-width: 1024px) 100vw, 340px"
-                            className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
-                          />
-                          <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
-                            <ZoomIn size={13} aria-hidden="true" />
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setLightboxImage({
-                              src: project.imageSecondary,
-                              alt: `${project.title[lang]} - Detail`,
-                            })
-                          }
-                          aria-label={`Zoom ${project.title[lang]} detail`}
-                          className="relative aspect-[4/3] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 opacity-90 hover:opacity-100 group/img cursor-zoom-in block transition-opacity focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
-                        >
-                          <Image
-                            src={project.imageSecondary}
-                            alt={`${project.title[lang]} - Detail`}
-                            fill
-                            sizes="(max-width: 1024px) 100vw, 340px"
-                            className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
-                          />
-                          <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
-                            <ZoomIn size={13} aria-hidden="true" />
-                          </span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] font-mono tracking-wider text-black/40 dark:text-brand-glow uppercase mb-2">
-                        {project.tag[lang]}
-                      </div>
-
-                      <h3 className="text-xl sm:text-2xl font-medium tracking-tight mb-3 group-hover:text-indigo-600 dark:group-hover:text-brand-glow transition-colors">
-                        {project.title[lang]}
-                      </h3>
-
-                      <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed mb-4">
-                        {project.desc[lang]}
-                      </p>
-
-                      <div className="mb-4 py-2 px-3 rounded-md bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-xs font-mono text-black/60 dark:text-white/60">
-                        {project.metrics[lang]}
-                      </div>
-
-                      <div className="flex flex-wrap gap-1.5 mb-6">
-                        {project.chips.map((chip) => (
-                          <span
-                            key={chip}
-                            className="text-xs font-mono px-2.5 py-1 rounded-md bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-black/70 dark:text-white/70"
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setLightboxImage({
+                                src: project.imageSecondary,
+                                alt: `${project.title[lang]} - Detail`,
+                              })
+                            }
+                            aria-label={`Zoom ${project.title[lang]} detail`}
+                            className="relative aspect-[4/3] w-full rounded-lg overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/50 opacity-90 hover:opacity-100 group/img cursor-zoom-in block transition-opacity focus:outline-none"
                           >
-                            {chip}
-                          </span>
-                        ))}
-                      </div>
+                            <Image
+                              src={project.imageSecondary}
+                              alt={`${project.title[lang]} - Detail`}
+                              fill
+                              sizes="(max-width: 1024px) 100vw, 340px"
+                              className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
+                            />
+                            <span className="absolute bottom-2 right-2 p-1.5 rounded bg-black/70 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                              <ZoomIn size={13} aria-hidden="true" />
+                            </span>
+                          </button>
+                        </div>
+                      )}
 
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-lg bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all"
-                        >
-                          <Code2 size={14} aria-hidden="true" />
-                          {t.projects.viewCode}
-                          <ArrowUpRight size={13} className="opacity-70" aria-hidden="true" />
-                        </a>
-                        {project.live && (
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[11px] font-mono tracking-wider text-[#0066ff] dark:text-[#2585ff] uppercase mb-1.5">
+                          {project.tag[lang]}
+                        </div>
+
+                        <h3 className="font-display text-xl sm:text-2xl font-semibold tracking-tight mb-2.5">
+                          {project.title[lang]}
+                        </h3>
+
+                        <p className="text-sm text-black/75 dark:text-white/75 leading-relaxed mb-4">
+                          {project.desc[lang]}
+                        </p>
+
+                        <div className="py-2 border-y border-black/[0.06] dark:border-white/[0.06] text-[11px] font-mono text-black/60 dark:text-white/55 mb-4">
+                          {project.metrics[lang]}
+                        </div>
+
+                        <div className="flex flex-wrap gap-1.5 mb-5">
+                          {project.chips.map((chip) => (
+                            <span
+                              key={chip}
+                              className="text-[11px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-black/70 dark:text-white/70"
+                            >
+                              {chip}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex flex-wrap gap-3">
                           <a
-                            href={project.live}
+                            href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
                           >
-                            {t.projects.livePreview}
+                            <Code2 size={14} aria-hidden="true" />
+                            {t.projects.viewCode}
                             <ArrowUpRight size={13} className="opacity-70" aria-hidden="true" />
                           </a>
-                        )}
+                          {project.live && (
+                            <a
+                              href={project.live}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/80 dark:text-white/80 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                            >
+                              {t.projects.livePreview}
+                              <ArrowUpRight size={13} className="opacity-70" aria-hidden="true" />
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.article>
-              ))}
-            </AnimatePresence>
-          </div>
-        </section>
-
-        {/* Live Infrastructure Section */}
-        <section id="infra" className="mb-20">
-          <div className="mb-8">
-            <span className="text-xs font-mono uppercase tracking-wider text-black/40 dark:text-brand-glow block mb-1">
-              {t.infra.sectionPre}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight mb-2">{t.infra.sectionTitle}</h2>
-            <p className="text-sm text-black/60 dark:text-white/60 max-w-2xl leading-relaxed">
-              {t.infra.sectionDesc}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* 10 Services List */}
-            <div className="lg:col-span-7 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-6 sm:p-7">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2.5">
-                  <Server size={16} className="text-emerald-500" aria-hidden="true" />
-                  <h3 className="text-sm font-medium tracking-tight">Systemd Production Daemons</h3>
-                </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                  {t.infra.activeServicesBadge}
-                </span>
-              </div>
-
-              <div className="space-y-2.5">
-                {liveServices.map((s) => (
-                  <div
-                    key={s.name}
-                    className="flex items-start justify-between gap-4 py-2 border-b border-black/5 dark:border-white/5 last:border-0 last:pb-0"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-mono text-xs text-black/90 dark:text-white/90 truncate">{s.name}</div>
-                      <div className="text-[11px] text-black/50 dark:text-white/40 mt-0.5">{s.desc[lang]}</div>
-                    </div>
-                    <span className="font-mono text-[10px] shrink-0 px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-black/50 dark:text-white/50">
-                      {s.port}
-                    </span>
-                  </div>
+                  </motion.article>
                 ))}
-              </div>
+              </AnimatePresence>
             </div>
+          </section>
 
-            {/* Mesh nodes */}
-            <div className="lg:col-span-5 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-6 sm:p-7 flex flex-col">
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-2.5">
-                  <ShieldCheck size={16} className="text-brand-glow" aria-hidden="true" />
-                  <h3 className="text-sm font-medium tracking-tight">Tailscale Mesh Nodes</h3>
-                </div>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-brand-glow/10 text-brand-glow border border-brand-glow/20">
-                  {t.infra.meshNodesBadge}
-                </span>
-              </div>
-
-              <div className="space-y-3 flex-1">
-                {meshNodes.map((n) => (
-                  <div key={n.host} className="flex items-start gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${
-                        n.status === 'online'
-                          ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]'
-                          : n.status === 'edge'
-                            ? 'bg-amber-500/70'
-                            : 'bg-black/30 dark:bg-white/30'
-                      }`}
-                    />
-                    <div className="min-w-0">
-                      <div className="text-xs font-medium text-black/90 dark:text-white/90">{n.host}</div>
-                      <div className="text-[11px] text-black/50 dark:text-white/40 leading-relaxed">{n.spec}</div>
-                      <div className="text-[10px] font-mono text-black/40 dark:text-white/35 mt-0.5 uppercase tracking-wide">
-                        {n.role[lang]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 pt-4 border-t border-black/5 dark:border-white/10">
-                <div className="flex items-center gap-2 text-[11px] font-mono text-black/50 dark:text-white/40">
-                  <Terminal size={12} aria-hidden="true" />
-                  <span>{t.infra.cronSummary}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Cloud & MicroVM Fleet Grid */}
-          <div className="mt-6 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-6 sm:p-7">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <Layers size={17} className="text-brand-glow" aria-hidden="true" />
-                  <h3 className="text-base font-medium tracking-tight">{t.infra.fleetTitle}</h3>
-                </div>
-                <p className="text-xs text-black/50 dark:text-white/40 mt-1 max-w-xl">
-                  {t.infra.fleetDesc}
-                </p>
-              </div>
-              <span className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-brand-glow/10 text-brand-glow border border-brand-glow/20 shrink-0 self-start sm:self-auto font-medium">
-                {t.infra.fleetBadge}
+          {/* 02 / Ops Console & Infrastructure (Monitor Surface — dense, glanceable, zero card bloat) */}
+          <section id="infra" className="mb-24">
+            <div className="mb-8">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+                {t.infra.sectionPre}
               </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em] mb-2">
+                {t.infra.sectionTitle}
+              </h2>
+              <p className="text-sm text-black/65 dark:text-white/65 max-w-2xl leading-relaxed">
+                {t.infra.sectionDesc}
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {cloudFleetNodes.map((node) => (
-                <div
-                  key={node.id}
-                  className="p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 hover:border-black/15 dark:hover:border-white/15 transition-all flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-2 mb-2.5">
-                      <div className="flex items-center gap-2 min-w-0">
-                        {node.iconType === 'server' && <Server size={15} className="text-emerald-500 shrink-0" aria-hidden="true" />}
-                        {node.iconType === 'cpu' && <Cpu size={15} className="text-indigo-400 shrink-0" aria-hidden="true" />}
-                        {node.iconType === 'browser' && <Globe size={15} className="text-amber-500 shrink-0" aria-hidden="true" />}
-                        {node.iconType === 'terminal' && <Terminal size={15} className="text-cyan-400 shrink-0" aria-hidden="true" />}
-                        {node.iconType === 'monitor' && <Monitor size={15} className="text-brand-glow shrink-0" aria-hidden="true" />}
-                        {node.iconType === 'box' && <Box size={15} className="text-blue-400 shrink-0" aria-hidden="true" />}
-                        <span className="text-xs font-semibold text-black/90 dark:text-white/90 truncate">
-                          {node.name}
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 ${
-                          node.statusType === 'online'
-                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                            : node.statusType === 'watchdog'
-                              ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
-                              : node.statusType === 'autowake'
-                                ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                                : 'bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/40 border border-black/10 dark:border-white/10'
-                        }`}
+            {/* Unified Ops Console Panel */}
+            <div className="rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-[#fafafa] dark:bg-[#0e0f11] overflow-hidden">
+              {/* Top Console Status Bar */}
+              <div className="px-4 sm:px-5 py-3 border-b border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.02] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 text-xs font-mono">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse shrink-0" aria-hidden="true" />
+                  <span className="text-black/85 dark:text-white/90 font-medium">{t.infra.consoleHost}</span>
+                </div>
+                <div className="text-[11px] font-mono text-black/55 dark:text-white/50 tabular-nums">
+                  {t.infra.consoleSummary}
+                </div>
+              </div>
+
+              {/* Console Navigation Tabs */}
+              <div
+                role="tablist"
+                aria-label="Infrastructure views"
+                className="flex overflow-x-auto border-b border-black/[0.08] dark:border-white/[0.08] bg-white/50 dark:bg-black/20 px-2 sm:px-4 gap-1"
+              >
+                {(
+                  [
+                    { key: 'fleet', label: t.infra.tabs.fleet },
+                    { key: 'services', label: t.infra.tabs.services },
+                    { key: 'mesh', label: t.infra.tabs.mesh },
+                    { key: 'gateway', label: t.infra.tabs.gateway },
+                  ] as const
+                ).map((tab) => {
+                  const active = infraTab === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => setInfraTab(tab.key)}
+                      className={`px-3.5 py-2.5 text-xs font-mono whitespace-nowrap border-b-2 transition-colors ${
+                        active
+                          ? 'border-[#0066ff] dark:border-[#2585ff] text-black dark:text-white font-medium'
+                          : 'border-transparent text-black/55 dark:text-white/50 hover:text-black dark:hover:text-white'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Console Tab Content */}
+              <div role="tabpanel" className="p-0">
+                {infraTab === 'fleet' && (
+                  <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+                    <div className="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                      <div className="col-span-3">{t.infra.headers.node}</div>
+                      <div className="col-span-3">{t.infra.headers.spec}</div>
+                      <div className="col-span-4">{t.infra.headers.role}</div>
+                      <div className="col-span-2 text-right">{t.infra.headers.status}</div>
+                    </div>
+                    {cloudFleetNodes.map((node) => (
+                      <div
+                        key={node.id}
+                        className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-4 sm:px-5 py-3.5 items-start md:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
                       >
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full ${
-                            node.statusType === 'online'
-                              ? 'bg-emerald-500 animate-pulse'
-                              : node.statusType === 'watchdog'
-                                ? 'bg-indigo-400 animate-pulse'
-                                : node.statusType === 'autowake'
-                                  ? 'bg-amber-500'
-                                  : 'bg-black/40 dark:bg-white/40'
-                          }`}
-                          aria-hidden="true"
-                        />
-                        {node.statusLabel[lang]}
+                        <div className="md:col-span-3 min-w-0">
+                          <div className="text-xs font-medium text-black/90 dark:text-white/95 truncate">
+                            {node.name}
+                          </div>
+                          <div className="text-[11px] font-mono text-black/45 dark:text-white/40">{node.provider}</div>
+                        </div>
+                        <div className="md:col-span-3 min-w-0">
+                          <div className="text-[11px] font-mono text-black/75 dark:text-white/75 tabular-nums">
+                            {node.spec}
+                          </div>
+                          <div className="text-[10px] font-mono text-black/45 dark:text-white/40">{node.os}</div>
+                        </div>
+                        <div className="md:col-span-4 text-xs text-black/65 dark:text-white/65 leading-relaxed">
+                          {node.role[lang]}
+                        </div>
+                        <div className="md:col-span-2 md:text-right">
+                          <span
+                            className={`text-[10px] font-mono px-2 py-0.5 rounded inline-flex items-center gap-1.5 ${
+                              node.statusType === 'online'
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                : node.statusType === 'watchdog'
+                                  ? 'bg-[#0066ff]/10 text-[#0066ff] dark:text-[#2585ff] border border-[#0066ff]/20'
+                                  : node.statusType === 'autowake'
+                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                    : 'bg-black/5 dark:bg-white/5 text-black/55 dark:text-white/45 border border-black/10 dark:border-white/10'
+                            }`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full ${
+                                node.statusType === 'online'
+                                  ? 'bg-emerald-500'
+                                  : node.statusType === 'watchdog'
+                                    ? 'bg-[#0066ff] dark:bg-[#2585ff]'
+                                    : node.statusType === 'autowake'
+                                      ? 'bg-amber-500'
+                                      : 'bg-black/35 dark:bg-white/35'
+                              }`}
+                              aria-hidden="true"
+                            />
+                            {node.statusLabel[lang]}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {infraTab === 'services' && (
+                  <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+                    <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                      <div className="col-span-4">{t.infra.headers.service}</div>
+                      <div className="col-span-6">{t.infra.headers.desc}</div>
+                      <div className="col-span-2 text-right">{t.infra.headers.bind}</div>
+                    </div>
+                    {liveServices.map((s) => (
+                      <div
+                        key={s.name}
+                        className="grid grid-cols-1 sm:grid-cols-12 gap-1.5 sm:gap-4 px-4 sm:px-5 py-3 items-start sm:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                      >
+                        <div className="sm:col-span-4 font-mono text-xs text-black/90 dark:text-white/95 flex items-center gap-2 min-w-0">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" aria-hidden="true" />
+                          <span className="truncate">{s.name}</span>
+                        </div>
+                        <div className="sm:col-span-6 text-xs text-black/65 dark:text-white/65">{s.desc[lang]}</div>
+                        <div className="sm:col-span-2 sm:text-right">
+                          <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/60 dark:text-white/60 tabular-nums">
+                            {s.port}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {infraTab === 'mesh' && (
+                  <div>
+                    <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+                      <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-2.5 text-[10px] font-mono uppercase tracking-wider text-black/45 dark:text-white/40 bg-black/[0.015] dark:bg-white/[0.015]">
+                        <div className="col-span-3">{t.infra.headers.host}</div>
+                        <div className="col-span-5">{t.infra.headers.hardware}</div>
+                        <div className="col-span-4">{t.infra.headers.role}</div>
+                      </div>
+                      {meshNodes.map((n) => (
+                        <div
+                          key={n.host}
+                          className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 px-4 sm:px-5 py-3 items-start sm:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                        >
+                          <div className="sm:col-span-3 flex items-center gap-2 font-mono text-xs text-black/90 dark:text-white/95">
+                            <span
+                              aria-hidden="true"
+                              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                n.status === 'online'
+                                  ? 'bg-emerald-500'
+                                  : n.status === 'edge'
+                                    ? 'bg-amber-500/80'
+                                    : 'bg-black/35 dark:bg-white/35'
+                              }`}
+                            />
+                            {n.host}
+                          </div>
+                          <div className="sm:col-span-5 text-xs font-mono text-black/60 dark:text-white/60">{n.spec}</div>
+                          <div className="sm:col-span-4 text-xs text-black/65 dark:text-white/65">{n.role[lang]}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-4 sm:px-5 py-3 border-t border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-2 text-[11px] font-mono text-black/55 dark:text-white/50">
+                      <Terminal size={12} aria-hidden="true" />
+                      <span>{t.infra.cronSummary}</span>
+                    </div>
+                  </div>
+                )}
+
+                {infraTab === 'gateway' && (
+                  <div className="p-5 sm:p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                      <div className="flex items-center gap-2">
+                        <Cpu size={15} className="text-[#0066ff] dark:text-[#2585ff]" aria-hidden="true" />
+                        <h3 className="text-sm font-medium">{t.infra.aiGatewayTitle}</h3>
+                      </div>
+                      <span className="text-[11px] font-mono text-black/55 dark:text-white/50">
+                        {t.infra.aiGatewayDesc}
                       </span>
                     </div>
-
-                    <div className="font-mono text-[11px] text-black/70 dark:text-white/70 mb-1">
-                      {node.spec}
-                    </div>
-                    <div className="text-[10px] font-mono text-black/40 dark:text-white/35 mb-2.5">
-                      {node.provider} · {node.os}
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        'Antigravity OAuth ×8',
+                        'OpenAI-Compatible ×7',
+                        'CodeBuddy ×2',
+                        'Qoder ×2',
+                        'Cloudflare AI',
+                        'OpenRouter',
+                        'TokenHarbor',
+                        'Combos: MODELSPAN · Hydrogen · 3.8F_GG · Bansos_men · Argon',
+                      ].map((textTag) => (
+                        <span
+                          key={textTag}
+                          className="text-[11px] font-mono px-2.5 py-1 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/70 dark:text-white/70"
+                        >
+                          {textTag}
+                        </span>
+                      ))}
                     </div>
                   </div>
-
-                  <p className="text-[11px] text-black/65 dark:text-white/65 leading-relaxed pt-2.5 border-t border-black/5 dark:border-white/5">
-                    {node.role[lang]}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* AI Gateway strip */}
-          <div className="mt-4 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2.5">
-                <Cpu size={16} className="text-emerald-500" aria-hidden="true" />
-                <h3 className="text-sm font-medium tracking-tight">{t.infra.aiGatewayTitle}</h3>
+                )}
               </div>
-              <span className="text-[11px] font-mono text-black/50 dark:text-white/40">
-                {t.infra.aiGatewayDesc}
+            </div>
+          </section>
+
+          {/* 03 / Background & Core Stack Matrix (Kills redundant 3-card Icon Topper grid) */}
+          <section id="background" className="mb-24">
+            <div className="mb-8 pb-4 border-b border-black/[0.08] dark:border-white/[0.08]">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-1.5">
+                {t.experience.sectionPre}
               </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em]">
+                {t.experience.sectionTitle}
+              </h2>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                'Antigravity OAuth ×8',
-                'OpenAI-Compatible ×7',
-                'CodeBuddy ×2',
-                'Qoder ×2',
-                'Cloudflare AI',
-                'OpenRouter',
-                'TokenHarbor',
-                'Combos: MODELSPAN · Hydrogen · 3.8F_GG · Bansos_men · Argon',
-              ].map((textTag) => (
-                <span
-                  key={textTag}
-                  className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-black/60 dark:text-white/60"
-                >
-                  {textTag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Experience & Education Section */}
-        <section id="background" className="mb-20">
-          <div className="mb-8">
-            <span className="text-xs font-mono uppercase tracking-wider text-black/40 dark:text-brand-glow block mb-1">
-              {t.experience.sectionPre}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight">{t.experience.sectionTitle}</h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-8 space-y-4">
-              {experienceItems.map((exp) => (
-                <div
-                  key={exp.role}
-                  className="p-6 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2.5">
-                      <Briefcase size={16} className="text-brand-glow shrink-0" aria-hidden="true" />
-                      <h3 className="text-base font-medium tracking-tight">{exp.role}</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+              {/* Experience List + Compact Stack Rows */}
+              <div className="lg:col-span-8 space-y-10">
+                <div className="divide-y divide-black/[0.08] dark:divide-white/[0.08]">
+                  {experienceItems.map((exp, idx) => (
+                    <div key={exp.role} className={idx === 0 ? 'pb-6' : 'pt-6'}>
+                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1">
+                        <h3 className="font-display text-base sm:text-lg font-semibold tracking-tight">{exp.role}</h3>
+                        <span className="text-[11px] font-mono text-black/50 dark:text-white/45">{exp.period[lang]}</span>
+                      </div>
+                      <div className="text-xs font-mono text-[#0066ff] dark:text-[#2585ff] mb-2.5">{exp.org}</div>
+                      <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed">{exp.summary[lang]}</p>
                     </div>
-                    <span className="text-[11px] font-mono text-black/50 dark:text-white/40">{exp.period[lang]}</span>
-                  </div>
-                  <div className="text-xs font-mono text-black/50 dark:text-white/50 mb-3">{exp.org}</div>
-                  <p className="text-sm text-black/70 dark:text-white/70 leading-relaxed">{exp.summary[lang]}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="lg:col-span-4 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-6 flex flex-col justify-between gap-6">
-              <div>
-                <div className="flex items-center gap-2.5 mb-4">
-                  <GraduationCap size={18} className="text-emerald-500" aria-hidden="true" />
-                  <h3 className="text-base font-medium tracking-tight">{t.experience.educationTitle}</h3>
-                </div>
-                <div className="text-sm font-medium text-black/90 dark:text-white/90">{t.experience.school}</div>
-                <div className="text-xs text-black/60 dark:text-white/50 mt-1">
-                  {t.experience.schoolDetail}
-                </div>
-              </div>
-
-              <div className="pt-5 border-t border-black/5 dark:border-white/10">
-                <div className="text-xs text-black/60 dark:text-white/50 mb-3">
-                  {t.experience.cvPrompt}
-                </div>
-                <a
-                  href="/CV_Marcelino_M_Turangan.pdf"
-                  download="CV_Marcelino_M_Turangan.pdf"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all"
-                >
-                  <Download size={14} aria-hidden="true" />
-                  {t.experience.downloadFullCv}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Capabilities Section */}
-        <section id="skills" className="mb-20">
-          <div className="mb-8">
-            <span className="text-xs font-mono uppercase tracking-wider text-black/40 dark:text-brand-glow block mb-1">
-              {t.capabilities.sectionPre}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight">{t.capabilities.sectionTitle}</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {capabilityCards.map((card, idx) => (
-              <div
-                key={card.title}
-                className="p-6 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all"
-              >
-                <div className="w-10 h-10 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center mb-5">
-                  {idx === 0 ? (
-                    <Cpu size={20} className="text-brand-glow" aria-hidden="true" />
-                  ) : idx === 1 ? (
-                    <Smartphone size={20} className="text-emerald-500" aria-hidden="true" />
-                  ) : (
-                    <Server size={20} className="text-blue-500" aria-hidden="true" />
-                  )}
-                </div>
-                <h3 className="text-lg font-medium tracking-tight mb-2">{card.title}</h3>
-                <p className="text-xs text-black/60 dark:text-white/60 leading-relaxed mb-4">
-                  {card.desc[lang]}
-                </p>
-                <ul className="space-y-2 text-xs text-black/70 dark:text-white/70 font-mono">
-                  {card.items.map((it) => (
-                    <li key={it} className="flex items-center gap-2">
-                      <span className="text-emerald-500">✓</span> {it}
-                    </li>
                   ))}
-                </ul>
+                </div>
+
+                {/* Compact Stack Spec Matrix (No icon toppers, no equal-weight feature tiles) */}
+                <div>
+                  <h3 className="text-xs font-mono uppercase tracking-wider text-black/50 dark:text-white/45 mb-4">
+                    {t.experience.stackTitle}
+                  </h3>
+                  <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06] border-y border-black/[0.08] dark:border-white/[0.08]">
+                    {stackRows.map((row) => (
+                      <div
+                        key={row.area.en}
+                        className="py-3.5 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6"
+                      >
+                        <div className="sm:w-40 shrink-0 text-xs font-mono font-medium text-black/85 dark:text-white/85">
+                          {row.area[lang]}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {row.items.map((item) => (
+                            <span
+                              key={item}
+                              className="text-[11px] font-mono px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.04] text-black/70 dark:text-white/70"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Contact Banner */}
-        <section
-          id="contact"
-          className="rounded-2xl p-8 sm:p-12 bg-black/[0.03] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 text-center relative overflow-hidden"
-        >
-          <div className="max-w-xl mx-auto relative z-10">
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight mb-3">{t.contact.title}</h2>
-            <p className="text-sm text-black/60 dark:text-white/60 leading-relaxed mb-6">
-              {t.contact.description}
-            </p>
+              {/* Education & ATS CV Sidebar */}
+              <div className="lg:col-span-4">
+                <div className="rounded-xl bg-[#fafafa] dark:bg-[#0e0f11] border border-black/[0.08] dark:border-white/[0.08] p-6 flex flex-col justify-between gap-6">
+                  <div>
+                    <div className="text-[11px] font-mono uppercase tracking-wider text-black/45 dark:text-white/45 mb-2">
+                      {t.experience.educationTitle}
+                    </div>
+                    <div className="font-display text-base font-semibold text-black/90 dark:text-white/95">
+                      {t.experience.school}
+                    </div>
+                    <div className="text-xs text-black/60 dark:text-white/55 mt-1">{t.experience.schoolDetail}</div>
+                  </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
+                  <div className="pt-5 border-t border-black/[0.08] dark:border-white/[0.08]">
+                    <div className="text-xs text-black/60 dark:text-white/55 mb-3">{t.experience.cvPrompt}</div>
+                    <a
+                      href="/CV_Marcelino_M_Turangan.pdf"
+                      download="CV_Marcelino_M_Turangan.pdf"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md text-xs font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
+                    >
+                      <Download size={14} aria-hidden="true" />
+                      {t.experience.downloadFullCv}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 04 / Editorial Split Contact (No centered SaaS marketing banner) */}
+          <section
+            id="contact"
+            className="pt-12 border-t border-black/[0.08] dark:border-white/[0.08] grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+          >
+            <div className="lg:col-span-7">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0066ff] dark:text-[#2585ff] block mb-2">
+                {t.contact.sectionPre}
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-[-0.025em] mb-3">
+                {t.contact.title}
+              </h2>
+              <p className="text-sm text-black/65 dark:text-white/65 leading-relaxed max-w-xl">
+                {t.contact.description}
+              </p>
+            </div>
+
+            <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-2.5 lg:items-stretch">
               <a
                 href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20bekerjasama%20untuk%20proyek"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-[#171717] text-white dark:bg-[#5e6ad2] dark:hover:bg-[#7170ff] hover:bg-black transition-all shadow-sm"
+                className="inline-flex items-center justify-between gap-3 px-4 py-2.5 rounded-md text-sm font-medium bg-[#111214] text-white dark:bg-[#0066ff] dark:hover:bg-[#2585ff] hover:bg-black transition-colors"
               >
-                <MessageSquare size={15} aria-hidden="true" />
-                {t.contact.chatWa}
+                <span className="inline-flex items-center gap-2">
+                  <MessageSquare size={15} aria-hidden="true" />
+                  {t.contact.chatWa}
+                </span>
+                <ArrowUpRight size={14} className="opacity-70" aria-hidden="true" />
               </a>
-              <a
-                href="/CV_Marcelino_M_Turangan.pdf"
-                download="CV_Marcelino_M_Turangan.pdf"
-                className="px-4 py-2.5 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all inline-flex items-center gap-2"
-              >
-                <Download size={15} aria-hidden="true" />
-                {t.contact.downloadCv}
-              </a>
+
               <button
                 type="button"
                 onClick={copyEmail}
-                className="px-4 py-2.5 rounded-lg text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black/80 dark:text-white/80 hover:bg-black/10 dark:hover:bg-white/10 transition-all inline-flex items-center gap-2"
+                className="px-4 py-2.5 rounded-md text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center justify-between gap-3"
               >
-                {copiedEmail ? (
-                  <Check size={15} className="text-emerald-500" aria-hidden="true" />
-                ) : (
-                  <Copy size={15} aria-hidden="true" />
-                )}
-                {copiedEmail ? t.contact.emailCopied : t.contact.copyEmail}
+                <span className="inline-flex items-center gap-2">
+                  {copiedEmail ? (
+                    <Check size={15} className="text-emerald-500" aria-hidden="true" />
+                  ) : (
+                    <Copy size={15} aria-hidden="true" />
+                  )}
+                  {copiedEmail ? t.contact.emailCopied : t.contact.copyEmail}
+                </span>
               </button>
               <span aria-live="polite" className="sr-only">
                 {copiedEmail ? t.contact.emailAriaCopied : ''}
               </span>
-            </div>
-          </div>
-        </section>
 
-        {/* Footer */}
-        <footer className="mt-20 pt-8 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-black/50 dark:text-white/40 gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="relative w-10 h-6 rounded-md overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
-              <Image
-                src="/logo.png"
-                alt="MT Logo"
-                fill
-                sizes="40px"
-                className="object-contain"
-              />
+              <a
+                href="/CV_Marcelino_M_Turangan.pdf"
+                download="CV_Marcelino_M_Turangan.pdf"
+                className="px-4 py-2.5 rounded-md text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all inline-flex items-center justify-between gap-3"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Download size={15} aria-hidden="true" />
+                  {t.contact.downloadCv}
+                </span>
+              </a>
             </div>
-            <span>{t.footer.copyright}</span>
-          </div>
-          <div className="flex items-center gap-4 font-mono">
-            <a
-              href="https://github.com/Marcel-mux"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-black dark:hover:text-white transition-colors"
-            >
-              GitHub
-            </a>
-            <span aria-hidden="true">•</span>
-            <a
-              href="https://www.threads.net/@marcelt_0"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-black dark:hover:text-white transition-colors"
-            >
-              Threads
-            </a>
-            <span aria-hidden="true">•</span>
-            <a
-              href="/CV_Marcelino_M_Turangan.pdf"
-              download="CV_Marcelino_M_Turangan.pdf"
-              className="hover:text-black dark:hover:text-white transition-colors"
-            >
-              CV (PDF)
-            </a>
-          </div>
-        </footer>
-      </main>
+          </section>
 
-      {/* Image Lightbox Modal */}
-      <AnimatePresence>
-        {lightboxImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setLightboxImage(null)}
-            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
-            role="dialog"
-            aria-modal="true"
-            aria-label={lightboxImage.alt}
-          >
-            <button
-              type="button"
-              onClick={() => setLightboxImage(null)}
-              aria-label="Close image preview"
-              className="fixed top-4 right-4 z-[110] p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
-            >
-              <X size={20} aria-hidden="true" />
-            </button>
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl h-[85vh] cursor-default"
-            >
+          {/* Footer */}
+          <footer className="mt-16 pt-8 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-xs text-black/50 dark:text-white/45 gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="relative w-10 h-6 rounded overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
+                <Image src="/logo.png" alt="MT Logo" fill sizes="40px" className="object-contain" />
+              </div>
+              <span>{t.footer.copyright}</span>
+            </div>
+            <div className="flex items-center gap-4 font-mono">
+              <a
+                href="https://github.com/Marcel-mux"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                GitHub
+              </a>
+              <span aria-hidden="true">•</span>
+              <a
+                href="https://www.threads.net/@marcelt_0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                Threads
+              </a>
+              <span aria-hidden="true">•</span>
+              <a
+                href="/CV_Marcelino_M_Turangan.pdf"
+                download="CV_Marcelino_M_Turangan.pdf"
+                className="hover:text-black dark:hover:text-white transition-colors"
+              >
+                CV (PDF)
+              </a>
+            </div>
+          </footer>
+        </main>
+
+        {/* Native <dialog> Image Lightbox Modal */}
+        <dialog
+          ref={dialogRef}
+          aria-label={lightboxImage?.alt ?? 'Image preview'}
+          onClose={() => setLightboxImage(null)}
+          onPointerDown={(e) => {
+            pressedOutsideRef.current = isOutsideDialogContent(e);
+          }}
+          onPointerUp={(e) => {
+            if (pressedOutsideRef.current && isOutsideDialogContent(e)) {
+              setLightboxImage(null);
+            }
+          }}
+          className="bg-transparent p-4 sm:p-8 max-w-none max-h-none w-full h-full m-0 open:flex items-center justify-center"
+        >
+          {lightboxImage && (
+            <div ref={dialogContentRef} className="relative w-full max-w-4xl h-[85vh]">
+              <button
+                type="button"
+                autoFocus
+                onClick={() => setLightboxImage(null)}
+                aria-label="Close image preview"
+                className="fixed top-4 right-4 z-[110] p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
               <Image
                 src={lightboxImage.src}
                 alt={lightboxImage.alt}
@@ -986,10 +1000,10 @@ export default function Home() {
                 sizes="95vw"
                 className="object-contain"
               />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </div>
+          )}
+        </dialog>
+      </div>
+    </MotionConfig>
   );
 }

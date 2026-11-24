@@ -1,23 +1,32 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Space_Grotesk, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-sans',
   display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
+  weight: ['400', '500'],
+  variable: '--font-mono',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Marcelino M. Turangan — AI Systems Integrator, Full-Stack Web/PWA & Linux Ops',
+  title: 'Marcelino M. Turangan — AI Systems Integrator, Web/PWA & Linux Ops',
   description:
-    'Portofolio Marcelino M. Turangan: Pengembang sistem AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), full-stack Next.js/PWA, dan infrastruktur Linux ARM64 di Nusantara (IKN).',
+    'Portofolio Marcelino M. Turangan: Pengembang agen AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), aplikasi Web/PWA, dan armada Linux ARM64 di Nusantara (IKN).',
 };
 
 const themeInitScript = `
@@ -46,7 +55,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-white text-[#171717] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-brand-indigo/30`}
+        className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} font-sans bg-white text-[#111214] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-[#0066ff]/25`}
       >
         {children}
       </body>
