@@ -73,6 +73,9 @@ export const translations = {
       description:
         'Praktisi Linux (3+ tahun) & AI Systems Integrator di Nusantara (IKN). Menghubungkan agen AI ke WhatsApp, Discord & Telegram, membangun aplikasi Web/PWA, dan menjalankan armada server Linux ARM64 24/7 tanpa ketergantungan SaaS pihak ketiga.',
       downloadCv: 'Unduh CV (PDF)',
+      whatsapp: 'WhatsApp',
+      email: 'Email',
+      emailCopied: 'Tersalin!',
       github: 'GitHub',
       threads: 'Threads',
       metaStrip: [
@@ -167,6 +170,9 @@ export const translations = {
       description:
         'Linux practitioner (3+ years) & AI Systems Integrator in Nusantara (IKN). I wire autonomous AI agents into WhatsApp, Discord & Telegram, ship fast Web/PWA apps, and operate a 24/7 ARM64 Linux fleet without third-party SaaS lock-in.',
       downloadCv: 'Download CV (PDF)',
+      whatsapp: 'WhatsApp',
+      email: 'Email',
+      emailCopied: 'Copied!',
       github: 'GitHub',
       threads: 'Threads',
       metaStrip: [

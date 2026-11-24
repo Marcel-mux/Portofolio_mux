@@ -17,6 +17,7 @@ import {
   Download,
   AtSign,
   Globe,
+  Mail,
   X,
   ZoomIn,
 } from 'lucide-react';
@@ -303,7 +304,7 @@ export default function Home() {
                   {t.hero.description}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <a
                     href="/CV_Marcelino_M_Turangan.pdf"
                     download="CV_Marcelino_M_Turangan.pdf"
@@ -313,10 +314,33 @@ export default function Home() {
                     {t.hero.downloadCv}
                   </a>
                   <a
+                    href="https://wa.me/628979360724?text=Halo%20Marcelino,%20saya%20tertarik%20dengan%20portofolio%20Anda"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                  >
+                    <MessageSquare size={15} aria-hidden="true" />
+                    {t.hero.whatsapp}
+                    <ArrowUpRight size={14} className="opacity-55" aria-hidden="true" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={copyEmail}
+                    aria-label={t.contact.copyEmail}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                  >
+                    {copiedEmail ? (
+                      <Check size={15} className="text-emerald-500" aria-hidden="true" />
+                    ) : (
+                      <Mail size={15} aria-hidden="true" />
+                    )}
+                    {copiedEmail ? t.hero.emailCopied : t.hero.email}
+                  </button>
+                  <a
                     href="https://github.com/Marcel-mux"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
                   >
                     <Code2 size={15} aria-hidden="true" />
                     {t.hero.github}
@@ -326,7 +350,7 @@ export default function Home() {
                     href="https://www.threads.net/@marcelt_0"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg text-sm font-medium bg-black/[0.04] dark:bg-white/[0.04] border border-black/[0.08] dark:border-white/[0.08] text-black/85 dark:text-white/85 hover:border-black/20 dark:hover:border-white/20 transition-all"
                   >
                     <AtSign size={15} aria-hidden="true" />
                     {t.hero.threads}
