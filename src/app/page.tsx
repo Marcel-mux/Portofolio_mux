@@ -21,12 +21,16 @@ import {
   Briefcase,
   GraduationCap,
   Globe,
+  Layers,
+  Monitor,
+  Box,
 } from 'lucide-react';
 import {
   translations,
   projectItems,
   liveServices,
   meshNodes,
+  cloudFleetNodes,
   experienceItems,
   capabilityCards,
   type Lang,
@@ -543,7 +547,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
                   <ShieldCheck size={16} className="text-brand-glow" aria-hidden="true" />
-                  <h3 className="text-sm font-medium tracking-tight">Tailscale Mesh</h3>
+                  <h3 className="text-sm font-medium tracking-tight">Tailscale Mesh Nodes</h3>
                 </div>
                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-brand-glow/10 text-brand-glow border border-brand-glow/20">
                   {t.infra.meshNodesBadge}
@@ -580,6 +584,85 @@ export default function Home() {
                   <span>{t.infra.cronSummary}</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Cloud & MicroVM Fleet Grid */}
+          <div className="mt-6 rounded-2xl bg-black/[0.02] dark:bg-[#0f1011] border border-black/10 dark:border-white/10 p-6 sm:p-7">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <Layers size={17} className="text-brand-glow" aria-hidden="true" />
+                  <h3 className="text-base font-medium tracking-tight">{t.infra.fleetTitle}</h3>
+                </div>
+                <p className="text-xs text-black/50 dark:text-white/40 mt-1 max-w-xl">
+                  {t.infra.fleetDesc}
+                </p>
+              </div>
+              <span className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-brand-glow/10 text-brand-glow border border-brand-glow/20 shrink-0 self-start sm:self-auto font-medium">
+                {t.infra.fleetBadge}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {cloudFleetNodes.map((node) => (
+                <div
+                  key={node.id}
+                  className="p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 hover:border-black/15 dark:hover:border-white/15 transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-2 mb-2.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {node.iconType === 'server' && <Server size={15} className="text-emerald-500 shrink-0" aria-hidden="true" />}
+                        {node.iconType === 'cpu' && <Cpu size={15} className="text-indigo-400 shrink-0" aria-hidden="true" />}
+                        {node.iconType === 'browser' && <Globe size={15} className="text-amber-500 shrink-0" aria-hidden="true" />}
+                        {node.iconType === 'terminal' && <Terminal size={15} className="text-cyan-400 shrink-0" aria-hidden="true" />}
+                        {node.iconType === 'monitor' && <Monitor size={15} className="text-brand-glow shrink-0" aria-hidden="true" />}
+                        {node.iconType === 'box' && <Box size={15} className="text-blue-400 shrink-0" aria-hidden="true" />}
+                        <span className="text-xs font-semibold text-black/90 dark:text-white/90 truncate">
+                          {node.name}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 ${
+                          node.statusType === 'online'
+                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                            : node.statusType === 'watchdog'
+                              ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                              : node.statusType === 'autowake'
+                                ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                                : 'bg-black/5 dark:bg-white/5 text-black/50 dark:text-white/40 border border-black/10 dark:border-white/10'
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            node.statusType === 'online'
+                              ? 'bg-emerald-500 animate-pulse'
+                              : node.statusType === 'watchdog'
+                                ? 'bg-indigo-400 animate-pulse'
+                                : node.statusType === 'autowake'
+                                  ? 'bg-amber-500'
+                                  : 'bg-black/40 dark:bg-white/40'
+                          }`}
+                          aria-hidden="true"
+                        />
+                        {node.statusLabel[lang]}
+                      </span>
+                    </div>
+
+                    <div className="font-mono text-[11px] text-black/70 dark:text-white/70 mb-1">
+                      {node.spec}
+                    </div>
+                    <div className="text-[10px] font-mono text-black/40 dark:text-white/35 mb-2.5">
+                      {node.provider} · {node.os}
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-black/65 dark:text-white/65 leading-relaxed pt-2.5 border-t border-black/5 dark:border-white/5">
+                    {node.role[lang]}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 

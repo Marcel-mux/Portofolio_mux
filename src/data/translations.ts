@@ -28,6 +28,18 @@ export interface MeshNode {
   status: 'online' | 'edge' | 'ephemeral';
 }
 
+export interface CloudFleetNode {
+  id: string;
+  name: string;
+  provider: string;
+  spec: string;
+  os: string;
+  role: { id: string; en: string };
+  statusLabel: { id: string; en: string };
+  statusType: 'online' | 'watchdog' | 'autowake' | 'standby';
+  iconType: 'server' | 'cpu' | 'browser' | 'terminal' | 'monitor' | 'box';
+}
+
 export interface ExperienceItem {
   role: string;
   org: string;
@@ -95,6 +107,10 @@ export const translations = {
       activeServicesBadge: '10 AKTIF',
       meshNodesBadge: '6 NODE',
       cronSummary: '17 cronjob · laporan kesehatan 2×/hari · audit keamanan 07:00 WITA',
+      fleetTitle: 'Armada Cloud VM & MicroVM Sandbox',
+      fleetBadge: '24 vCPU / 72 GB RAM TOTAL',
+      fleetDesc:
+        'Kompilasi armada virtual terdistribusi: cloud ARM64 24/7, sandbox komputasi berat x86_64, microVM Firecracker, hingga lingkungan otomasi desktop GUI Windows & Linux.',
       aiGatewayTitle: '9Router — Multi-Provider AI Gateway',
       aiGatewayDesc: '22 koneksi · 7 keluarga provider · 5 fallback combo',
     },
@@ -178,6 +194,10 @@ export const translations = {
       activeServicesBadge: '10 ACTIVE',
       meshNodesBadge: '6 NODES',
       cronSummary: '17 cronjobs · health report 2×/day · security audit 07:00 WITA',
+      fleetTitle: 'Cloud VM & MicroVM Sandbox Fleet',
+      fleetBadge: '24 vCPU / 72 GB RAM TOTAL',
+      fleetDesc:
+        'Distributed multi-platform compute fleet: 24/7 ARM64 cloud host, heavy x86_64 compute sandbox, Firecracker microVMs, and full Linux/Windows desktop GUI agent environments.',
       aiGatewayTitle: '9Router — Multi-Provider AI Gateway',
       aiGatewayDesc: '22 connections · 7 provider families · 5 fallback combos',
     },
@@ -451,32 +471,125 @@ export const meshNodes: MeshNode[] = [
   {
     host: 'muxoracle',
     spec: 'Oracle Cloud · 4 OCPU / 24 GB ARM64',
-    role: { id: 'Core / Utama', en: 'Core / Primary' },
+    role: { id: 'Core / Utama (24/7 Mothership)', en: 'Core / Primary (24/7 Mothership)' },
+    status: 'online',
+  },
+  {
+    host: 'muxcue',
+    spec: 'Manus Cloud VM · 8 vCPU / 24 GB x86_64',
+    role: { id: 'Heavy Compute & Dev Sandbox', en: 'Heavy Compute & Dev Sandbox' },
     status: 'online',
   },
   {
     host: 'cachyos-ltx13g1',
-    spec: 'ThinkPad X13 · CachyOS',
-    role: { id: 'Perangkat Harian', en: 'Daily driver' },
+    spec: 'ThinkPad X13 Gen 1 AMD · CachyOS',
+    role: { id: 'Laptop Harian (Daily Driver)', en: 'Daily Driver Laptop' },
     status: 'edge',
   },
   {
     host: 'zendeavour-sky232',
-    spec: 'EndeavourOS · Sky 232',
-    role: { id: 'Dev / Backup', en: 'Dev / Backup' },
+    spec: 'PC Workstation · EndeavourOS',
+    role: { id: 'Dev & Storage Backup', en: 'Dev & Storage Backup' },
     status: 'edge',
   },
   {
     host: 'infinix-gt-30-pro',
-    spec: 'Android · Termux SSH',
-    role: { id: 'Node Operasi Mobile', en: 'Mobile ops node' },
+    spec: 'Infinix GT 30 Pro · Termux SSH',
+    role: { id: 'Node Operasi Mobile', en: 'Mobile Ops Node' },
     status: 'edge',
   },
   {
-    host: 'cue-* · muse',
-    spec: '2 Tagged cloud sandboxes',
-    role: { id: 'Komputasi Efemeral', en: 'Ephemeral compute' },
+    host: 'muse',
+    spec: 'Secure Cloud VM · Tagged Sandbox',
+    role: { id: 'Agent Security Node', en: 'Agent Security Node' },
     status: 'ephemeral',
+  },
+];
+
+export const cloudFleetNodes: CloudFleetNode[] = [
+  {
+    id: 'oracle',
+    name: 'Oracle Cloud (muxoracle)',
+    provider: 'OCI Always Free A1',
+    spec: '4 OCPU ARM64 · 24 GB RAM · 200 GB NVMe',
+    os: 'Ubuntu 26.04 LTS',
+    role: {
+      id: 'Pusat Kendali 24/7: Menjalankan 9Router, Hermes Gateway, Bot WA Sipuki/Cobra, PWA Cockpit, & 17 cronjob.',
+      en: '24/7 Core Mothership: Runs 9Router AI Gateway, Hermes Gateway, Sipuki/Cobra WA bots, Cockpit PWA, & 17 cronjobs.',
+    },
+    statusLabel: { id: 'Aktif 24/7', en: '24/7 Online' },
+    statusType: 'online',
+    iconType: 'server',
+  },
+  {
+    id: 'cue',
+    name: 'Manus Cue (muxcue)',
+    provider: 'Manus Long Sandbox',
+    spec: '8 vCPU x86_64 · 24 GB RAM · 70 GB SSD',
+    os: 'Ubuntu 24.04 LTS',
+    role: {
+      id: 'Sandbox komputasi berat, Next.js build, DeepSeek test harness, dengan keepalive watchdog Hermes.',
+      en: 'Heavy compute sandbox, Next.js builds, DeepSeek test harness, with Hermes keepalive watchdog.',
+    },
+    statusLabel: { id: 'Siaga / Watchdog', en: 'Watchdog Active' },
+    statusType: 'watchdog',
+    iconType: 'cpu',
+  },
+  {
+    id: 'instabox',
+    name: 'InstaBox (agent-browser)',
+    provider: 'Firecracker MicroVM',
+    spec: '4 vCPU · 8 GB RAM · 36 GB Storage',
+    os: 'Isolated Linux MicroVM',
+    role: {
+      id: 'Automasi web browser headless cepat, web scraping JavaScript berat, & eksekusi terisolasi.',
+      en: 'Ultra-fast headless browser automation, dynamic JavaScript scraping, & sandboxed execution.',
+    },
+    statusLabel: { id: 'Auto-Wake API', en: 'Auto-Wake API' },
+    statusType: 'autowake',
+    iconType: 'browser',
+  },
+  {
+    id: 'freestyle',
+    name: 'Freestyle.sh (mux-fssh)',
+    provider: 'Freestyle Cloud MicroVM',
+    spec: '4 vCPU · 8 GB RAM · 32 GB NVMe',
+    os: 'Ubuntu 24.04 LTS',
+    role: {
+      id: 'Disposable sandbox pengujian kode bebas & runner kompilasi on-demand via direct CLI.',
+      en: 'Disposable testing sandbox & on-demand build runner with instant CLI access.',
+    },
+    statusLabel: { id: 'Auto-Wake CLI', en: 'Auto-Wake CLI' },
+    statusType: 'autowake',
+    iconType: 'terminal',
+  },
+  {
+    id: 'simularbox',
+    name: 'Simular Box (main)',
+    provider: 'Simular Cloud Desktop',
+    spec: '2 vCPU AMD EPYC · 4 GB RAM · 20 GB SSD',
+    os: 'Ubuntu 24.04 XFCE Desktop',
+    role: {
+      id: 'Automasi GUI desktop Linux & pengujian agen interaktif computer-use via MCP + Live View.',
+      en: 'Linux desktop GUI automation & computer-use interactive agent testing via MCP + Live View.',
+    },
+    statusLabel: { id: 'Hibernate / MCP', en: 'Hibernate / MCP' },
+    statusType: 'standby',
+    iconType: 'monitor',
+  },
+  {
+    id: 'simularai',
+    name: 'Simular Sai (simularai)',
+    provider: 'Simular Cloud Windows',
+    spec: '2 vCPU · 4 GB RAM · ~40 GB Ephemeral',
+    os: 'Windows 10 Pro',
+    role: {
+      id: 'Automasi aplikasi Windows murni (.exe & native GUI) untuk workflow otomasi lintas OS.',
+      en: 'Native Windows desktop automation (.exe & native UI) for cross-platform agent workflows.',
+    },
+    statusLabel: { id: 'Standby / Lease', en: 'Standby / Lease' },
+    statusType: 'standby',
+    iconType: 'box',
   },
 ];
 
