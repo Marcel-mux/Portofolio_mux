@@ -180,13 +180,13 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/85 dark:bg-[#08090a]/85 backdrop-blur-md border-b border-black/5 dark:border-white/10">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-black/10 dark:border-white/20 shadow-sm bg-black">
+            <div className="relative w-14 h-9 rounded-lg overflow-hidden border border-black/10 dark:border-white/20 shadow-sm bg-black shrink-0">
               <Image
                 src="/logo.png"
                 alt="MT Logo — Marcelino M. Turangan"
                 fill
-                sizes="36px"
-                className="object-cover object-center"
+                sizes="56px"
+                className="object-contain"
               />
             </div>
             <div>
@@ -909,13 +909,13 @@ export default function Home() {
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-black/5 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-black/50 dark:text-white/40 gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="relative w-6 h-6 rounded-md overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
+            <div className="relative w-10 h-6 rounded-md overflow-hidden border border-black/10 dark:border-white/15 bg-black shrink-0">
               <Image
                 src="/logo.png"
                 alt="MT Logo"
                 fill
-                sizes="24px"
-                className="object-cover object-center"
+                sizes="40px"
+                className="object-contain"
               />
             </div>
             <span>{t.footer.copyright}</span>
