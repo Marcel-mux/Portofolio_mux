@@ -1,6 +1,6 @@
 export type Lang = 'id' | 'en';
 export type TabKey = 'all' | 'ai' | 'web' | 'linux';
-export type InfraTabKey = 'fleet' | 'services' | 'mesh' | 'gateway';
+export type InfraTabKey = 'fleet' | 'services' | 'mesh' | 'cron' | 'gateway';
 
 export interface ProjectItem {
   id: string;
@@ -39,6 +39,16 @@ export interface CloudFleetNode {
   role: { id: string; en: string };
   statusLabel: { id: string; en: string };
   statusType: 'online' | 'watchdog' | 'autowake' | 'standby';
+}
+
+export interface CronJobItem {
+  id: string;
+  name: { id: string; en: string };
+  schedule: string;
+  desc: { id: string; en: string };
+  target: string;
+  mode: 'script' | 'agent';
+  status: 'active' | 'paused';
 }
 
 export interface ExperienceItem {
@@ -109,6 +119,7 @@ export const translations = {
         fleet: 'Cloud Fleet (6)',
         services: 'Systemd (10)',
         mesh: 'Tailscale Mesh (6)',
+        cron: 'Cronjobs (17)',
         gateway: '9Router Gateway',
       },
       headers: {
@@ -121,8 +132,12 @@ export const translations = {
         bind: 'Port / Bind',
         host: 'Hostname',
         hardware: 'Perangkat & OS',
+        job: 'Job & Mode',
+        schedule: 'Jadwal (WITA)',
+        target: 'Kanal & Status',
       },
       cronSummary: '17 cronjobs · health check 09:00 & 21:00 · audit keamanan 07:00 WITA',
+      cronFooter: '16 aktif · 1 paused · Zona WITA (UTC+8) · Hermes Cron Scheduler',
       aiGatewayTitle: '9Router Multi-Provider AI Gateway',
       aiGatewayDesc: '22 koneksi aktif · 7 provider family · 5 fallback combo (:20128)',
     },
@@ -206,6 +221,7 @@ export const translations = {
         fleet: 'Cloud Fleet (6)',
         services: 'Systemd (10)',
         mesh: 'Tailscale Mesh (6)',
+        cron: 'Cronjobs (17)',
         gateway: '9Router Gateway',
       },
       headers: {
@@ -218,8 +234,12 @@ export const translations = {
         bind: 'Port / Bind',
         host: 'Hostname',
         hardware: 'Hardware & OS',
+        job: 'Job & Mode',
+        schedule: 'Schedule (UTC+8)',
+        target: 'Target & Status',
       },
       cronSummary: '17 cronjobs · health checks 09:00 & 21:00 · security audit 07:00 WITA',
+      cronFooter: '16 active · 1 paused · WITA (UTC+8) · Hermes Cron Scheduler',
       aiGatewayTitle: '9Router Multi-Provider AI Gateway',
       aiGatewayDesc: '22 active connections · 7 provider families · 5 fallback combos (:20128)',
     },
@@ -573,6 +593,213 @@ export const cloudFleetNodes: CloudFleetNode[] = [
     },
     statusLabel: { id: 'Standby / API', en: 'Standby / API' },
     statusType: 'standby',
+  },
+];
+
+export const cronJobs: CronJobItem[] = [
+  {
+    id: 'cue-keepalive',
+    name: { id: 'Hermes-Cue Keepalive & Watchdog', en: 'Hermes-Cue Keepalive & Watchdog' },
+    schedule: 'every 1m',
+    desc: {
+      id: 'Keepalive jitter acak untuk sandbox komputasi, proteksi anti-context bloat multi-agent, dan killswitch.',
+      en: 'Randomized-jitter compute sandbox keepalive, multi-agent anti-context bloat guard, and killswitch.',
+    },
+    target: 'Discord',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'oauth-guard',
+    name: { id: '9Router Antigravity Auto-Heal Guard', en: '9Router Antigravity Auto-Heal Guard' },
+    schedule: 'every 5m',
+    desc: {
+      id: 'Watchdog probe OAuth 401 pada 9Router dan pemulihan sesi macet otomatis tanpa intervensi manual.',
+      en: 'Probes 9Router Antigravity OAuth tokens for 401 errors and auto-recovers stuck sessions.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'ram80-alert',
+    name: { id: 'Alert RAM VPS 80%', en: 'VPS RAM 80% Alert' },
+    schedule: 'every 5m',
+    desc: {
+      id: 'Pemantauan penggunaan memori host produksi Oracle ARM64 dengan peringatan instan bila menembus 80%.',
+      en: 'Monitors Oracle ARM64 host memory usage and fires instant alerts when usage exceeds 80%.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'thinkpad-thermal',
+    name: { id: 'Monitor Performa & Suhu ThinkPad X13', en: 'ThinkPad X13 Thermal & Gaming Monitor' },
+    schedule: 'every 5m',
+    desc: {
+      id: 'Pantau suhu CPU/GPU dan performa laptop ThinkPad X13 CachyOS khusus saat sesi gaming aktif.',
+      en: 'Tracks CPU/GPU thermals and frame telemetry on ThinkPad X13 CachyOS during active gaming.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'oci-billing',
+    name: { id: 'OCI Billing Watchdog', en: 'OCI Billing Watchdog' },
+    schedule: 'every 10m',
+    desc: {
+      id: 'Deteksi anomali tagihan Oracle Cloud secara real-time untuk menjaga armada tetap dalam batas Always Free.',
+      en: 'Real-time Oracle Cloud billing anomaly detector to keep the fleet within Always Free limits.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'paused',
+  },
+  {
+    id: 'free-model-sync',
+    name: { id: 'Sync Otomatis Free Model (9Router)', en: 'Auto-Sync Free LLM Models (9Router)' },
+    schedule: 'every 15m',
+    desc: {
+      id: 'Sinkronisasi daftar model gratis OpenCode, OpenRouter & Nous Portal ke 9Router dan menu /model Hermes.',
+      en: 'Syncs free model catalogs from OpenCode, OpenRouter & Nous Portal into 9Router and Hermes /model.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'ai-frontier-radar',
+    name: { id: 'AI Frontier Radar (Stealth & Leaks)', en: 'AI Frontier Radar (Stealth & Leaks)' },
+    schedule: 'every 6h',
+    desc: {
+      id: 'Scan berkala leaderboard Arena AI, stealth model drops di OpenRouter/HF, serta rilis free tier terbaru.',
+      en: 'Periodic scan of Arena AI leaderboards, OpenRouter/HF stealth drops, and newly launched free tiers.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'agent',
+    status: 'active',
+  },
+  {
+    id: 'oci-usage',
+    name: { id: 'Laporan Kuota & Biaya OCI', en: 'OCI Usage & Quota Report' },
+    schedule: 'every 6h',
+    desc: {
+      id: 'Rekap berkala pemakaian kuota OCPU, RAM, bandwidth egress, dan biaya Oracle Cloud.',
+      en: 'Periodic summary of Oracle Cloud OCPU, memory, egress bandwidth quotas, and cost telemetry.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'security-audit',
+    name: { id: 'Audit Keamanan VM Oracle', en: 'Oracle VM Daily Security Audit' },
+    schedule: '07:00 daily',
+    desc: {
+      id: 'Audit harian firewall UFW, SSH hardening, status Fail2ban, riwayat login 24 jam, sudoers, dan security patch.',
+      en: 'Daily audit covering UFW rules, SSH hardening, Fail2ban bans, 24h logins, sudoers, and OS patches.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'antigravity-recap',
+    name: { id: 'Rekap Status Akun Antigravity', en: 'Antigravity Account Health Recap' },
+    schedule: '08:00 & 20:00',
+    desc: {
+      id: 'Rekap pasif status kesehatan dan kuota seluruh pool akun Antigravity di database SQLite 9Router.',
+      en: 'Passive health and quota summary across all Antigravity OAuth accounts stored in 9Router SQLite.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'infra-daily',
+    name: { id: 'Infra Overview Daily Checker', en: 'Infra Overview Daily Checker' },
+    schedule: '08:30 daily',
+    desc: {
+      id: 'Deteksi perubahan harian pada VPS, cloud sandbox, dan workstation; silent jika tidak ada diff.',
+      en: 'Checks daily topology drift across VPS, cloud sandboxes, and workstations; silent when unchanged.',
+    },
+    target: 'Discord',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'server-health',
+    name: { id: 'Laporan Kesehatan Server VPS', en: 'VPS Server Health Report' },
+    schedule: '09:00 & 21:00',
+    desc: {
+      id: 'Pemeriksaan load average, uptime, penggunaan disk/RAM, dan status 10 daemon systemd utama.',
+      en: 'Checks load average, uptime, disk/RAM utilization, and health of all 10 core systemd daemons.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'agent',
+    status: 'active',
+  },
+  {
+    id: 'kernel-endeavour',
+    name: { id: 'Monitor Kernel Linux (EndeavourOS)', en: 'Linux Kernel Update Monitor (EndeavourOS)' },
+    schedule: 'every 24h',
+    desc: {
+      id: 'Pantau rilis kernel major baru untuk workstation EndeavourOS sebelum melakukan pembaruan sistem.',
+      en: 'Monitors major Linux kernel releases for the EndeavourOS workstation prior to system upgrades.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'kernel-cachyos',
+    name: { id: 'Monitor Kernel Linux (CachyOS X13)', en: 'Linux Kernel Update Monitor (CachyOS X13)' },
+    schedule: 'every 24h',
+    desc: {
+      id: 'Pantau pembaruan kernel CachyOS terbaru yang dioptimasi khusus untuk ThinkPad X13 AMD.',
+      en: 'Tracks optimized CachyOS major kernel releases tailored for the ThinkPad X13 AMD laptop.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'safe-cleanup',
+    name: { id: 'Hermes & 9Router Safe Cleanup', en: 'Hermes & 9Router Safe Cleanup' },
+    schedule: '04:00 / 2d',
+    desc: {
+      id: 'Pembersihan otomatis cache sementara, log lama, dan file ephemeral setiap 2 hari agar storage tetap lega.',
+      en: 'Automated bi-daily pruning of ephemeral caches and stale logs to keep NVMe storage lean.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'script',
+    status: 'active',
+  },
+  {
+    id: 'weekly-backup',
+    name: { id: 'Backup Mingguan VM Oracle', en: 'Weekly Oracle VM Backup' },
+    schedule: 'Sun 00:00',
+    desc: {
+      id: 'Backup terenkripsi konfigurasi Hermes, database 9Router, dan state kritis tiap Minggu tengah malam.',
+      en: 'Encrypted weekly backup of Hermes configs, 9Router state, and critical service data every Sunday.',
+    },
+    target: 'Discord · Telegram',
+    mode: 'agent',
+    status: 'active',
+  },
+  {
+    id: 'infra-weekly',
+    name: { id: 'Infra Overview Rekap Mingguan', en: 'Weekly Infra Overview & Changelog' },
+    schedule: 'Sun 08:30',
+    desc: {
+      id: 'Rekap lengkap mingguan seluruh komponen armada (Cloud VPS, Sandboxes, Workstation) beserta changelog.',
+      en: 'Full weekly summary of all fleet components (Cloud VPS, Sandboxes, Workstations) and changelog.',
+    },
+    target: 'Discord',
+    mode: 'script',
+    status: 'active',
   },
 ];
 

@@ -25,6 +25,7 @@ import {
   liveServices,
   meshNodes,
   cloudFleetNodes,
+  cronJobs,
   experienceItems,
   stackRows,
   type Lang,
@@ -613,13 +614,14 @@ export default function Home() {
               <div
                 role="tablist"
                 aria-label="Infrastructure views"
-                className="flex flex-wrap sm:flex-nowrap border-b border-black/[0.08] dark:border-white/[0.08] bg-white/50 dark:bg-black/20 px-2 sm:px-4 gap-1 max-w-full"
+                className="flex flex-wrap border-b border-black/[0.08] dark:border-white/[0.08] bg-white/50 dark:bg-black/20 px-2 sm:px-4 gap-1 max-w-full"
               >
                 {(
                   [
                     { key: 'fleet', label: t.infra.tabs.fleet },
                     { key: 'services', label: t.infra.tabs.services },
                     { key: 'mesh', label: t.infra.tabs.mesh },
+                    { key: 'cron', label: t.infra.tabs.cron },
                     { key: 'gateway', label: t.infra.tabs.gateway },
                   ] as const
                 ).map((tab) => {
@@ -766,6 +768,68 @@ export default function Home() {
                     <div className="px-4 sm:px-5 py-3 border-t border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-2 text-[13px] font-mono text-black/65 dark:text-white/60">
                       <Terminal size={14} aria-hidden="true" />
                       <span>{t.infra.cronSummary}</span>
+                    </div>
+                  </div>
+                )}
+
+                {infraTab === 'cron' && (
+                  <div>
+                    <div className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+                      <div className="hidden md:grid md:grid-cols-12 gap-4 px-5 py-2.5 text-[13px] font-mono font-medium text-black/55 dark:text-white/50 bg-black/[0.015] dark:bg-white/[0.015]">
+                        <div className="col-span-3">{t.infra.headers.job}</div>
+                        <div className="col-span-2">{t.infra.headers.schedule}</div>
+                        <div className="col-span-5">{t.infra.headers.desc}</div>
+                        <div className="col-span-2 text-right">{t.infra.headers.target}</div>
+                      </div>
+                      {cronJobs.map((job) => (
+                        <div
+                          key={job.id}
+                          className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-4 sm:px-5 py-3 items-start md:items-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+                        >
+                          <div className="md:col-span-3 min-w-0">
+                            <div className="flex items-center gap-2 text-sm font-medium text-black/90 dark:text-white/95">
+                              <span
+                                aria-hidden="true"
+                                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                  job.status === 'active'
+                                    ? 'bg-emerald-500'
+                                    : 'bg-amber-500/80'
+                                }`}
+                              />
+                              <span className="truncate">{job.name[lang]}</span>
+                            </div>
+                            <div className="text-[13px] font-mono text-black/55 dark:text-white/50 pl-3.5">
+                              {job.mode === 'agent' ? 'AI Agent' : 'Script (No-Token)'}
+                            </div>
+                          </div>
+                          <div className="md:col-span-2">
+                            <span className="font-mono text-[13px] px-2 py-0.5 rounded bg-black/[0.04] dark:bg-white/[0.05] border border-black/[0.06] dark:border-white/[0.08] text-black/80 dark:text-white/80 tabular-nums inline-block">
+                              {job.schedule}
+                            </span>
+                          </div>
+                          <div className="md:col-span-5 text-sm text-black/75 dark:text-white/75 leading-relaxed">
+                            {job.desc[lang]}
+                          </div>
+                          <div className="md:col-span-2 md:text-right flex flex-wrap md:flex-col md:items-end gap-1">
+                            <span className="text-[13px] font-mono text-black/65 dark:text-white/60">
+                              {job.target}
+                            </span>
+                            <span
+                              className={`text-[12px] font-mono px-2 py-0.5 rounded inline-flex items-center ${
+                                job.status === 'active'
+                                  ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'
+                              }`}
+                            >
+                              {job.status === 'active' ? 'Active' : 'Paused'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-4 sm:px-5 py-3 border-t border-black/[0.08] dark:border-white/[0.08] bg-black/[0.015] dark:bg-white/[0.015] flex items-center gap-2 text-[13px] font-mono text-black/65 dark:text-white/60">
+                      <Terminal size={14} aria-hidden="true" />
+                      <span>{t.infra.cronFooter}</span>
                     </div>
                   </div>
                 )}
