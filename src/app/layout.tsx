@@ -24,29 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://marcelt.is-a.dev'),
   title: 'Marcelino M. Turangan: AI Systems, Web/PWA & Linux Ops',
   description:
     'Portofolio Marcelino M. Turangan: agen AI otonom (Hermes Cockpit, Antigravity Discord Gateway, WA/TG bots), aplikasi Web/PWA, dan armada Linux ARM64 di Nusantara (IKN).',
-  openGraph: {
-    type: 'website',
-    title: 'Marcelino M. Turangan: AI Systems, Web/PWA & Linux Ops',
-    description:
-      'Agen AI otonom, Web/PWA modern, dan infrastruktur Linux self-hosted ARM64 berjalan 24/7 di Nusantara (IKN).',
-    images: [
-      {
-        url: '/projects/system-architecture.png',
-        alt: 'Arsitektur Sistem Hybrid Marcelino M. Turangan',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Marcelino M. Turangan: AI Systems, Web/PWA & Linux Ops',
-    description:
-      'Agen AI otonom, Web/PWA modern, dan infrastruktur Linux self-hosted ARM64.',
-    images: ['/projects/system-architecture.png'],
-  },
 };
 
 const themeInitScript = `
@@ -69,16 +49,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" data-type="software" suppressHydrationWarning>
+    <html lang="id" data-type="software" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#08090a" />
         <meta name="page-type" content="software" />
         <meta name="site-kind" content="software" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} font-sans text-base bg-white text-[#111214] dark:bg-[#08090a] dark:text-[#f3f4f6] min-h-screen selection:bg-[#0066ff]/25 overflow-x-clip`}
+        className={`${spaceGrotesk.variable} ${ibmPlexSans.variable} ${jetbrainsMono.variable} font-sans text-base bg-white text-[#111214] dark:bg-dark-bg dark:text-dark-text min-h-screen selection:bg-[#0066ff]/25`}
       >
         {children}
       </body>

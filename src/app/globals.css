@@ -4,31 +4,6 @@
 
 :root {
   color-scheme: light dark;
-  --nav: 72px;
-  --padt: 112px;
-  --padb: 64px;
-  --hgap: 48px;
-  --hpadb: 56px;
-  --gut: 80px;
-}
-
-@media (max-width: 1023px) {
-  :root {
-    --gut: 48px;
-    --padt: 96px;
-    --padb: 48px;
-  }
-}
-
-@media (max-width: 639px) {
-  :root {
-    --nav: 56px;
-    --gut: 24px;
-    --padt: 88px;
-    --padb: 48px;
-    --hgap: 32px;
-    --hpadb: 28px;
-  }
 }
 
 :root:has(> head > meta[name="color-scheme"][content="dark"]) {
@@ -40,57 +15,14 @@
 }
 
 @layer base {
-  html {
-    scroll-padding-top: 0;
-    scroll-behavior: auto;
-    margin: 0;
-  }
-
   body {
-    margin: 0;
+    @apply transition-colors duration-200 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
 
-  :where(a, button, [tabindex]) {
-    scroll-margin-top: calc(var(--nav) + 28px);
-  }
-
-  :where(a:any-link, button, [tabindex]):focus-visible {
-    outline: 2px solid #0052cc;
-    outline-offset: 2px;
-    transition: none !important;
-  }
-
-  html.dark :where(a:any-link, button, [tabindex]):focus-visible {
-    outline-color: #60a5fa;
-  }
-}
-
-.wrap {
-  width: min(100% - 2 * var(--gut), 1280px);
-  margin-inline: auto;
-}
-
-.hero-section {
-  padding-top: calc(var(--nav) + var(--hgap));
-  padding-bottom: var(--hpadb);
-  min-height: 100svh;
-}
-
-.screen-section {
-  padding-top: var(--padt);
-  padding-bottom: var(--padb);
-}
-
-@media (min-width: 1024px) {
-  .hero-section {
-    height: 100svh;
-  }
-
-  .screen-section {
-    height: calc(var(--h, 1) * 100svh);
+  :where(a:any-link, button, [tabindex="-1"]):focus-visible {
+    outline: 2px solid #0066ff;
+    outline-offset: 3px;
   }
 }
 
@@ -102,6 +34,6 @@ dialog:modal {
 dialog::backdrop {
   overflow: hidden;
   overscroll-behavior: contain;
-  background: rgba(5, 6, 8, 0.9);
+  background: rgba(5, 6, 8, 0.88);
   backdrop-filter: blur(6px);
 }
