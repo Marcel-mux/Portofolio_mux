@@ -162,7 +162,7 @@ export default function Home() {
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText('marcel.mux@gmail.com');
+      await navigator.clipboard.writeText('marcelturangan2@gmail.com');
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 2500);
     } catch {

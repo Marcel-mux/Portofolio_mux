@@ -140,9 +140,9 @@ export const translations = {
         'Tersedia untuk kerja remote, proyek integrasi bot/agen AI (WhatsApp, Discord, Telegram), pengembangan Web/PWA, atau setup infrastruktur Linux self-hosted.',
       chatWa: 'WhatsApp (+62 897-9360-724)',
       downloadCv: 'Unduh CV (PDF)',
-      copyEmail: 'Salin marcel.mux@gmail.com',
+      copyEmail: 'Salin marcelturangan2@gmail.com',
       emailCopied: 'Email Tersalin!',
-      emailAriaCopied: 'Email marcel.mux@gmail.com berhasil disalin ke clipboard',
+      emailAriaCopied: 'Email marcelturangan2@gmail.com berhasil disalin ke clipboard',
     },
     footer: {
       copyright: '© 2026 Marcelino M. Turangan · IKN Nusantara, Indonesia',
@@ -234,9 +234,9 @@ export const translations = {
         'Open to remote roles, AI agent integrations (WhatsApp, Discord, Telegram), Web/PWA builds, and self-hosted Linux/cloud architecture.',
       chatWa: 'WhatsApp (+62 897-9360-724)',
       downloadCv: 'Download CV (PDF)',
-      copyEmail: 'Copy marcel.mux@gmail.com',
+      copyEmail: 'Copy marcelturangan2@gmail.com',
       emailCopied: 'Email Copied!',
-      emailAriaCopied: 'Email marcel.mux@gmail.com copied to clipboard',
+      emailAriaCopied: 'Email marcelturangan2@gmail.com copied to clipboard',
     },
     footer: {
       copyright: '© 2026 Marcelino M. Turangan · IKN Nusantara, Indonesia',
