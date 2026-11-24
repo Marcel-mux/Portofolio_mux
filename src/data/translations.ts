@@ -10,6 +10,7 @@ export interface ProjectItem {
   chips: string[];
   image: string;
   imageSecondary: string;
+  mediaLayout: 'portrait-pair' | 'stack';
   github: string;
   live?: string;
   metrics: { id: string; en: string };
@@ -247,8 +248,9 @@ export const projectItems: ProjectItem[] = [
       en: 'Open-source mobile-first Progressive Web App (PWA) client for Nous Research Hermes Agent. Features real-time WebSocket token streaming, interactive thought-process accordion, dedicated profile isolation, zero-dependency reverse proxy (server.mjs) with Brotli/Gzip compression, audio cues, and Docker Compose readiness.',
     },
     chips: ['React Native / Expo Web', 'TypeScript', 'Tailwind CSS', 'Node.js Proxy', 'WebSockets', 'Docker'],
-    image: '/projects/hermes-cockpit-preview.png',
-    imageSecondary: '/projects/hermes-cockpit-icon.png',
+    image: '/projects/hermes-cockpit-chat-dark.png',
+    imageSecondary: '/projects/hermes-cockpit-settings-dark.png',
+    mediaLayout: 'portrait-pair',
     github: 'https://github.com/Marcel-mux/hermes-cockpit',
     metrics: {
       id: 'Zero-Dependency Proxy · Real-Time WS Streaming · Standalone PWA',
@@ -273,6 +275,7 @@ export const projectItems: ProjectItem[] = [
     chips: ['Python 3', 'discord.py', 'systemd', 'SQLite FTS5', 'Multi-Server Gating', 'Live Streaming'],
     image: '/projects/antigravity-gateway-arch.png',
     imageSecondary: '/projects/antigravity-gateway-cli.png',
+    mediaLayout: 'stack',
     github: 'https://github.com/Marcel-mux',
     metrics: {
       id: 'Sesi Persisten · Multi-Server @mention · Pencarian SQLite FTS5',
@@ -297,6 +300,7 @@ export const projectItems: ProjectItem[] = [
     chips: ['Node.js', 'Baileys WS', 'Hermes Gateway', '9Router / Gemini', 'systemd Daemons', 'Parallel Search'],
     image: '/projects/whatsapp-cobra.jpg',
     imageSecondary: '/projects/telegram-agents.jpg',
+    mediaLayout: 'portrait-pair',
     github: 'https://github.com/Marcel-mux',
     metrics: {
       id: 'Routing Mandiri · Multi-Persona Agents · Vision & Audio/TTS',
@@ -321,6 +325,7 @@ export const projectItems: ProjectItem[] = [
     chips: ['Python 3', 'Node.js Proxy', 'OAuth Lifecycle', 'systemd Watchdog', '9Router API', 'SQLite Probes'],
     image: '/projects/system-architecture.png',
     imageSecondary: '/projects/vps-infra-map.png',
+    mediaLayout: 'stack',
     github: 'https://github.com/Marcel-mux/antigravity-guard-9router',
     metrics: {
       id: 'Zero-Touch Recovery · Automated Token Refresh · WAF Mitigation',
@@ -345,6 +350,7 @@ export const projectItems: ProjectItem[] = [
     chips: ['Next.js 14', 'TypeScript', 'Prisma ORM', 'PostgreSQL', 'Tailwind CSS', 'Vercel'],
     image: '/projects/finpulse-charts.jpg',
     imageSecondary: '/projects/finpulse.jpg',
+    mediaLayout: 'portrait-pair',
     github: 'https://github.com/Marcel-mux/FInPulse-Project',
     metrics: {
       id: 'Multi-Account Net Worth · AI Q&A Chatbot · Telegram Alerts',
@@ -376,6 +382,7 @@ export const projectItems: ProjectItem[] = [
     ],
     image: '/projects/vps-infra-map.png',
     imageSecondary: '/projects/endeavour-neofetch.jpg',
+    mediaLayout: 'stack',
     github: 'https://github.com/Marcel-mux',
     metrics: {
       id: '4 OCPU / 24 GB RAM · 6 Mesh Nodes · 10 Live Services',

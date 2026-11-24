@@ -24,6 +24,8 @@ import {
   Layers,
   Monitor,
   Box,
+  X,
+  ZoomIn,
 } from 'lucide-react';
 import {
   translations,
@@ -68,6 +70,16 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>('id');
   const [activeTab, setActiveTab] = useState<TabKey>('all');
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
+
+  useEffect(() => {
+    if (!lightboxImage) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxImage(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightboxImage]);
 
   const syncFromPreference = useCallback(() => {
     const override = getStoredOverride();
@@ -418,26 +430,75 @@ export default function Home() {
                 >
                   <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
                     {/* Media Gallery */}
-                    <div className="w-full lg:w-[320px] shrink-0 space-y-3">
-                      <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5">
-                        <Image
-                          src={project.image}
-                          alt={project.title[lang]}
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 320px"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                    {project.mediaLayout === 'portrait-pair' ? (
+                      <div className="w-full lg:w-[340px] shrink-0 grid grid-cols-2 gap-2.5">
+                        {[
+                          { src: project.image, alt: project.title[lang] },
+                          { src: project.imageSecondary, alt: `${project.title[lang]} - Detail` },
+                        ].map((media) => (
+                          <button
+                            key={media.src}
+                            type="button"
+                            onClick={() => setLightboxImage(media)}
+                            aria-label={`Zoom ${media.alt}`}
+                            className="relative aspect-[9/20] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 group/img cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
+                          >
+                            <Image
+                              src={media.src}
+                              alt={media.alt}
+                              fill
+                              sizes="(max-width: 1024px) 50vw, 170px"
+                              className="object-contain p-0.5 group-hover/img:scale-[1.03] transition-transform duration-300"
+                            />
+                            <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                              <ZoomIn size={12} aria-hidden="true" />
+                            </span>
+                          </button>
+                        ))}
                       </div>
-                      <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden border border-black/5 dark:border-white/5 bg-black/5 dark:bg-white/5 opacity-80 group-hover:opacity-100 transition-opacity">
-                        <Image
-                          src={project.imageSecondary}
-                          alt={`${project.title[lang]} - Detail`}
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 320px"
-                          className="object-cover"
-                        />
+                    ) : (
+                      <div className="w-full lg:w-[340px] shrink-0 space-y-3">
+                        <button
+                          type="button"
+                          onClick={() => setLightboxImage({ src: project.image, alt: project.title[lang] })}
+                          aria-label={`Zoom ${project.title[lang]}`}
+                          className="relative aspect-[4/3] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 group/img cursor-zoom-in block focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
+                        >
+                          <Image
+                            src={project.image}
+                            alt={project.title[lang]}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 340px"
+                            className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
+                          />
+                          <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                            <ZoomIn size={13} aria-hidden="true" />
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setLightboxImage({
+                              src: project.imageSecondary,
+                              alt: `${project.title[lang]} - Detail`,
+                            })
+                          }
+                          aria-label={`Zoom ${project.title[lang]} detail`}
+                          className="relative aspect-[4/3] w-full rounded-xl overflow-hidden border border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-black/40 opacity-90 hover:opacity-100 group/img cursor-zoom-in block transition-opacity focus:outline-none focus:ring-2 focus:ring-[#5e6ad2]"
+                        >
+                          <Image
+                            src={project.imageSecondary}
+                            alt={`${project.title[lang]} - Detail`}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 340px"
+                            className="object-contain p-1 group-hover/img:scale-[1.02] transition-transform duration-300"
+                          />
+                          <span className="absolute bottom-2 right-2 p-1.5 rounded-md bg-black/60 text-white opacity-0 group-hover/img:opacity-100 transition-opacity">
+                            <ZoomIn size={13} aria-hidden="true" />
+                          </span>
+                        </button>
                       </div>
-                    </div>
+                    )}
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
@@ -877,6 +938,47 @@ export default function Home() {
           </div>
         </footer>
       </main>
+
+      {/* Image Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxImage(null)}
+            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
+            role="dialog"
+            aria-modal="true"
+            aria-label={lightboxImage.alt}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxImage(null)}
+              aria-label="Close image preview"
+              className="fixed top-4 right-4 z-[110] p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors"
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-4xl h-[85vh] cursor-default"
+            >
+              <Image
+                src={lightboxImage.src}
+                alt={lightboxImage.alt}
+                fill
+                sizes="95vw"
+                className="object-contain"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
