@@ -62,6 +62,66 @@ function applySchemeToDom(override: Scheme | null, resolved: Scheme): void {
   root.classList.toggle('light', resolved === 'light');
 }
 
+function BrandMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        width="64"
+        height="64"
+        rx="14"
+        className="fill-[#F4F6FA] dark:fill-[#0E1116]"
+      />
+      <rect
+        x="0.75"
+        y="0.75"
+        width="62.5"
+        height="62.5"
+        rx="13.25"
+        strokeWidth="1.5"
+        className="stroke-black/15 dark:stroke-white/15"
+      />
+      <path
+        d="M11 43V21L21 33L31 21V43"
+        strokeWidth="4.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="stroke-[#111214] dark:stroke-[#F5F6F8]"
+      />
+      <path
+        d="M31 21H53"
+        strokeWidth="4.6"
+        strokeLinecap="round"
+        className="stroke-[#111214] dark:stroke-[#F5F6F8]"
+      />
+      <path
+        d="M44 21V43"
+        strokeWidth="4.6"
+        strokeLinecap="round"
+        className="stroke-[#111214] dark:stroke-[#F5F6F8]"
+      />
+      <circle
+        cx="31"
+        cy="21"
+        r="3.6"
+        strokeWidth="1.2"
+        className="fill-[#0066FF] stroke-[#F4F6FA] dark:fill-[#2585FF] dark:stroke-[#0E1116]"
+      />
+      <circle
+        cx="53"
+        cy="21"
+        r="3.7"
+        className="fill-[#0066FF] dark:fill-[#2585FF]"
+      />
+    </svg>
+  );
+}
+
 function ProjectMedia({
   project,
   lang,
@@ -387,16 +447,7 @@ export default function Home() {
         <header className="sticky top-0 z-50 bg-white/95 dark:bg-[#08090a]/95 backdrop-blur-sm border-b border-black/[0.08] dark:border-white/[0.08]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
             <a href="#" className="flex items-center gap-3 min-w-0 group">
-              <div className="relative w-14 h-8 rounded-md overflow-hidden border border-black/15 dark:border-white/15 bg-black shrink-0">
-                <Image
-                  src="/logo.png"
-                  alt="MT Logo"
-                  fill
-                  priority
-                  sizes="56px"
-                  className="object-contain"
-                />
-              </div>
+              <BrandMark className="w-9 h-9 shrink-0 transition-transform duration-150 group-hover:scale-[1.03]" />
               <div className="min-w-0">
                 <span className="font-display font-semibold text-sm tracking-tight block truncate text-black/95 dark:text-white group-hover:text-[#0066ff] dark:group-hover:text-[#2585ff] transition-colors">
                   Marcelino M. Turangan
@@ -1212,9 +1263,7 @@ export default function Home() {
           {/* Footer */}
           <footer className="pt-8 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row items-center justify-between text-[13px] text-black/65 dark:text-white/60 gap-4">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-7 rounded overflow-hidden border border-black/15 dark:border-white/15 bg-black shrink-0">
-                <Image src="/logo.png" alt="MT Logo" fill sizes="48px" className="object-contain" />
-              </div>
+              <BrandMark className="w-7 h-7 shrink-0" />
               <span>{t.footer.copyright}</span>
             </div>
             <div className="flex items-center gap-4 font-mono">
