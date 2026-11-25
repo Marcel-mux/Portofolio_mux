@@ -11,7 +11,8 @@ export interface ProjectItem {
   chips: string[];
   image: string;
   imageSecondary: string;
-  mediaLayout: 'portrait-pair' | 'stack';
+  imageLabels?: [{ id: string; en: string }, { id: string; en: string }];
+  mediaLayout: 'portrait-pair' | 'square-pair' | 'switcher';
   github: string;
   live?: string;
   metrics: { id: string; en: string };
@@ -77,9 +78,11 @@ export const translations = {
     hero: {
       skipToContent: 'Lewati ke konten utama',
       location: 'IKN, Indonesia (WITA)',
-      badge: 'Terbuka untuk Remote Engineering, Integrasi AI & Linux Ops',
+      locationShort: 'IKN · WITA',
+      badge: 'Terbuka: Remote AI, Web & Linux Ops',
       titlePart1: 'Agen AI Otonom, ',
-      titlePart2: 'Web/PWA & Sistem Linux Self-Hosted.',
+      titlePart2: 'Web/PWA & Sistem Linux ',
+      titlePart3: 'Self-Hosted.',
       description:
         'Praktisi Linux (6+ tahun) & AI Systems Integrator di Nusantara (IKN). Merakit bot AI di WhatsApp, Discord & Telegram, aplikasi Web/PWA, serta server Linux ARM64 24/7.',
       downloadCv: 'Unduh CV',
@@ -89,10 +92,10 @@ export const translations = {
       github: 'GitHub @Marcel-mux',
       threads: 'Threads @marcelt_0',
       metaStrip: [
-        'IKN Nusantara (UTC+8)',
         '6+ Tahun Linux Harian',
         'Armada 24 vCPU / 72 GB RAM',
         '10 Daemon Systemd Aktif',
+        '22 Rute Model LLM',
       ],
     },
     projects: {
@@ -120,7 +123,13 @@ export const translations = {
         services: 'Systemd (10)',
         mesh: 'Tailscale Mesh (6)',
         cron: 'Cronjobs (17)',
-        gateway: '9Router Gateway',
+        gateway: '9Router Gateway (22)',
+      },
+      cronFilters: {
+        all: 'Semua (17)',
+        active: 'Aktif (16)',
+        agent: 'AI Agent (3)',
+        paused: 'Paused (1)',
       },
       headers: {
         node: 'Node / Provider',
@@ -147,7 +156,7 @@ export const translations = {
       stackTitle: 'Tech Stack Utama',
       educationTitle: 'Pendidikan',
       school: 'Politeknik Negeri Manado',
-      schoolDetail: 'Manado State Polytechnic, Sulawesi Utara',
+      schoolDetail: 'Sulawesi Utara, Indonesia',
       cvPrompt: 'Versi ringkas siap cetak / ATS:',
       downloadFullCv: 'Unduh CV (PDF)',
     },
@@ -179,9 +188,11 @@ export const translations = {
     hero: {
       skipToContent: 'Skip to main content',
       location: 'IKN, Indonesia (WITA)',
-      badge: 'Open for Remote Engineering, AI Systems & Linux Ops',
+      locationShort: 'IKN · WITA',
+      badge: 'Open: Remote AI, Web & Linux Ops',
       titlePart1: 'Autonomous AI Agents, ',
-      titlePart2: 'Web/PWA Apps & Self-Hosted Linux.',
+      titlePart2: 'Web/PWA Apps & ',
+      titlePart3: 'Self-Hosted Linux.',
       description:
         'Linux practitioner (6+ years) & AI Systems Integrator in Nusantara (IKN). I build AI bots on WhatsApp, Discord & Telegram, Web/PWA apps, and 24/7 ARM64 Linux servers.',
       downloadCv: 'Download CV',
@@ -191,10 +202,10 @@ export const translations = {
       github: 'GitHub @Marcel-mux',
       threads: 'Threads @marcelt_0',
       metaStrip: [
-        'IKN Nusantara (UTC+8)',
         '6+ Yrs Daily-Driver Linux',
         '24 vCPU / 72 GB Cloud Fleet',
         '10 Live systemd Daemons',
+        '22 Active LLM Routes',
       ],
     },
     projects: {
@@ -222,7 +233,13 @@ export const translations = {
         services: 'Systemd (10)',
         mesh: 'Tailscale Mesh (6)',
         cron: 'Cronjobs (17)',
-        gateway: '9Router Gateway',
+        gateway: '9Router Gateway (22)',
+      },
+      cronFilters: {
+        all: 'All (17)',
+        active: 'Active (16)',
+        agent: 'AI Agent (3)',
+        paused: 'Paused (1)',
       },
       headers: {
         node: 'Node / Provider',
@@ -249,7 +266,7 @@ export const translations = {
       stackTitle: 'Core Stack',
       educationTitle: 'Education',
       school: 'Manado State Polytechnic',
-      schoolDetail: 'Politeknik Negeri Manado, North Sulawesi',
+      schoolDetail: 'North Sulawesi, Indonesia',
       cvPrompt: 'Print-ready ATS resume:',
       downloadFullCv: 'Download CV',
     },
@@ -314,7 +331,11 @@ export const projectItems: ProjectItem[] = [
     chips: ['Python 3', 'discord.py', 'systemd', 'SQLite FTS5', 'Live Streaming'],
     image: '/projects/antigravity-gateway-arch.png',
     imageSecondary: '/projects/antigravity-gateway-cli.png',
-    mediaLayout: 'stack',
+    imageLabels: [
+      { id: 'Arsitektur', en: 'Architecture' },
+      { id: 'Live CLI', en: 'Live CLI' },
+    ],
+    mediaLayout: 'switcher',
     github: 'https://github.com/Marcel-mux',
     metrics: {
       id: 'Sesi Persisten · Multi-Server @mention · SQLite FTS5 Search',
@@ -364,7 +385,11 @@ export const projectItems: ProjectItem[] = [
     chips: ['Python 3', 'Node.js Proxy', 'OAuth Lifecycle', 'systemd', 'SQLite'],
     image: '/projects/system-architecture.png',
     imageSecondary: '/projects/vps-infra-map.png',
-    mediaLayout: 'stack',
+    imageLabels: [
+      { id: 'Arsitektur Sistem', en: 'System Architecture' },
+      { id: 'Topologi VPS', en: 'VPS Topology' },
+    ],
+    mediaLayout: 'switcher',
     github: 'https://github.com/Marcel-mux/antigravity-guard-9router',
     metrics: {
       id: 'Zero-Touch Recovery · Automated Token Refresh · WAF Proxy',
@@ -414,7 +439,11 @@ export const projectItems: ProjectItem[] = [
     chips: ['Oracle ARM64', 'Ubuntu 26.04', 'Tailscale Mesh', 'systemd', 'Fail2ban'],
     image: '/projects/vps-infra-map.png',
     imageSecondary: '/projects/endeavour-neofetch.jpg',
-    mediaLayout: 'stack',
+    imageLabels: [
+      { id: 'Topologi Fleet', en: 'Fleet Topology' },
+      { id: 'Workstation', en: 'Workstation' },
+    ],
+    mediaLayout: 'switcher',
     github: 'https://github.com/Marcel-mux',
     metrics: {
       id: '4 OCPU / 24 GB RAM · 6 Mesh Nodes · 10 Live Services',
