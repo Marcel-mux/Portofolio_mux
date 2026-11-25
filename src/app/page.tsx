@@ -605,14 +605,14 @@ export default function Home() {
               </div>
 
               {/* Profile Photo */}
-              <div className="md:col-span-4 relative aspect-square max-w-[280px] md:max-w-[330px] w-full mx-auto md:ml-auto md:mr-0 rounded-xl overflow-hidden border border-black/[0.12] dark:border-white/[0.14] bg-[#0b0d10] group">
+              <div className="md:col-span-4 relative aspect-[9/10] max-w-[270px] md:max-w-[320px] w-full mx-auto md:ml-auto md:mr-0 rounded-xl overflow-hidden border border-black/[0.12] dark:border-white/[0.14] bg-[#0b0d10] group">
                 <Image
                   src="/projects/profile.jpg"
                   alt="Marcelino M. Turangan"
                   fill
-                  sizes="(max-width: 768px) 280px, 330px"
+                  sizes="(max-width: 768px) 270px, 320px"
                   priority
-                  className="object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
+                  className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                 />
               </div>
             </div>
